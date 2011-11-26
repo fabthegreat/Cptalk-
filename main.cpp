@@ -1,13 +1,16 @@
 #include <gloox/client.h>
 #include <gloox/connectionlistener.h>
-#include <gloox/messagehandler.h>
+#include <gloox/messagesessionhandler.h>
+
 #include <iostream>
 #include <string>
 
 using namespace gloox;
 
-class MyClass : public ConnectionListener,MessageHandler
- {
+
+
+class MyClass : public ConnectionListener, MessageSessionHandler
+{
 public:
 // à la connexion
 void doSomething();
@@ -15,8 +18,11 @@ void onConnect();
 void onDisconnect(ConnectionError e);
 bool onTLSConnect(const CertInfo& info);
 
+
+
 //à la reception de messages
-void handleMessage(const Message& msg, MessageSession* session = 0);
+void handleMessageSession(MessageSession* session);
+/**void handleMessage(const Message& msg, MessageSession* session = 0);**/
 };
 
 void MyClass::doSomething()
@@ -24,7 +30,7 @@ void MyClass::doSomething()
 	JID jid( "bot@lutix.org/cptalk" );
 	Client* client = new Client( jid, "fab99999" );
 	client->registerConnectionListener( this );
-	client->registerMessageHandler( this );
+	client->registerMessageSessionHandler( this, 0 );
 	client->connect();
 }
 
@@ -43,13 +49,20 @@ bool MyClass::onTLSConnect(const CertInfo& info)
 		 {
 				 //std::cout << "connecté en TLS!" << std::endl;			//             // presence info
 				//             // presence info
+				return 0;
 		}
 
-void MyClass::handleMessage(const Message& msg, MessageSession* session)
-{
 
-		std::cout << "un message a été reçu!" << std::endl;
+void MyClass::handleMessageSession(MessageSession* session)
+{
+  
+
+
 }
+
+
+
+
 
 int main() {
 
