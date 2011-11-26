@@ -1,6 +1,7 @@
 #include <gloox/client.h>
 #include <gloox/connectionlistener.h>
 #include <gloox/messagesessionhandler.h>
+#include <gloox/messagehandler.h>
 
 #include <iostream>
 #include <string>
@@ -9,7 +10,7 @@ using namespace gloox;
 
 
 
-class MyClass : public ConnectionListener, MessageSessionHandler
+class MyClass : public ConnectionListener, MessageSessionHandler, MessageHandler
 {
 public:
 // à la connexion
@@ -22,7 +23,8 @@ bool onTLSConnect(const CertInfo& info);
 
 //à la reception de messages
 void handleMessageSession(MessageSession* session);
-/**void handleMessage(const Message& msg, MessageSession* session = 0);**/
+void handleMessage(const Message& msg, MessageSession* session=0);
+
 };
 
 void MyClass::doSomething()
@@ -47,21 +49,27 @@ void MyClass::onDisconnect(ConnectionError e)
 
 bool MyClass::onTLSConnect(const CertInfo& info)
 		 {
-				 //std::cout << "connecté en TLS!" << std::endl;			//             // presence info
+				std::cout << "connecté en TLS!" << std::endl;			//             // presence info
 				//             // presence info
-				return 0;
+				return 1;
 		}
 
 
 void MyClass::handleMessageSession(MessageSession* session)
 {
   
-
+session->registerMessageHandler(this);
+session->send( "Messaage de session!", "No Subject" );
 
 }
 
 
 
+void MyClass::handleMessage(const Message& msg, MessageSession* session)
+{
+
+session->send( "Message de message!", "No Subject" );
+}
 
 
 int main() {
