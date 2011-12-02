@@ -1,11 +1,4 @@
-#include <gloox/client.h>
-#include <gloox/connectionlistener.h>
-#include <gloox/messagesessionhandler.h>
-#include <gloox/messagehandler.h>
-
 #include "Core.h"
-
-
 
 void Core::doSomething()
 {
@@ -15,6 +8,7 @@ void Core::doSomething()
 void Core::onConnect()
 		 {
 				 std::cout << "connecté en mode normal!" << std::endl ;			//             // presence info
+				 connected=true;
 		}
 
 void Core::onDisconnect(ConnectionError e)

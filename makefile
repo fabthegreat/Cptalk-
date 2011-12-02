@@ -5,11 +5,11 @@ EXEC=cptalk
 
 all: cptalk
 
-cptalk: main.o
-	$(CXX) -o $(EXEC) main.o $(CXXFLAGS) $(LDFLAGS)
+cptalk: main.o Core.o
+	$(CXX) -o $(EXEC) main.o Core.o $(CXXFLAGS) $(LDFLAGS)
 
-main.o: main.cpp
-	$(CXX) -c main.cpp $(CXXFLAGS) $(LDFLAGS)
+main.o Core.o: main.cpp Core.cpp Core.h
+	$(CXX) -c main.cpp Core.cpp $(CXXFLAGS) $(LDFLAGS)
 
 .PHONY: clean mrproper
 

@@ -15,7 +15,7 @@ void doSomething();
 void onConnect();
 void onDisconnect(ConnectionError e);
 bool onTLSConnect(const CertInfo& info);
-
+bool connected;
 
 
 //à la reception de messages
