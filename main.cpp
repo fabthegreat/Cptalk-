@@ -1,4 +1,5 @@
 #include "Core.h"
+#include "interface.h"
 #include <iostream>
 #include <string>
 
@@ -18,11 +19,17 @@ int main() {
 
 		JID jid( "bot@lutix.org/cptalk" );
 		Client* client = new Client( jid, "fab99999" );
+		/** Chargement des options du client **/
 		client->registerConnectionListener( core );
 		client->registerMessageSessionHandler( core, 0 );
-		//client->connect(); 
+		client->registerPresenceHandler( core );
+		
+      	client->rosterManager()->registerRosterListener(core);
+		//RosterManager* liste_roster = new RosterManager(client);
+		//liste_roster->registerRosterListener(core);		
 
-		/** Exemple de Thread **/
+
+		/** Thread de connexion**/
 		pthread_t my_thread;		
 	
 		/*void *thread_fnc(void *arg)**/
@@ -33,7 +40,7 @@ int main() {
 		bool start=false;
 		
 		while ( start == 0 ) { 
-		start=core->connected;
+			start=core->connected;
 		}	
 		
 		start_commandmode();			
@@ -43,19 +50,11 @@ int main() {
 void start_commandmode(){
 		std::cout << std::endl << "Mode commande de cptalk:" << std::endl;
 		std::string commande;
-		while(std::cin >> commande) {
-		std::cout << "Vous avez entré une commande!" << std::endl;}
-		
-
 
 }
 
 void *connect_thread(void *objet){
 		((Client*)objet)->connect();
-
-
-return NULL;
-
+		return NULL;
 }
-
 

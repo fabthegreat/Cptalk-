@@ -1,15 +1,42 @@
-#include <ncurses.h>
-#include <panel.h>
 #include <string>
+#include "interface.h"
+
 
 int main(){
 
+terminal xterm;
+output sortie(xterm.hauteur,xterm.largeur);
+
+
+
+for (int i=0;i<sortie.hauteur;i++){
+string s="salut"+i;
+sortie.ajout_ligne(s);
+}
+
+
+sortie.affichage();
+
+
+
+update_panels();
+doupdate();
+
+getch();
+
+return 0;
+
+}
+
+
+
+void test_c(){		
 WINDOW *fenetres[2];
 PANEL *panels[2];
 char commande[1000];
 
 
-int nb_lin,  nb_col, y=5,x=2, max_lin,max_col;
+int max_lin,max_col;
 
 initscr();
 cbreak();
@@ -52,8 +79,5 @@ mvwprintw(fenetres[0],1,1,"%s",commande);
 getch();
 
 endwin();
-
-return 0;
-
 }
 
