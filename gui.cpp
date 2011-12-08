@@ -6,21 +6,31 @@ int main(){
 
 terminal xterm;
 output sortie(xterm.hauteur,xterm.largeur);
+input entree(xterm.hauteur,xterm.largeur);
 
 
-
-for (int i=0;i<sortie.hauteur;i++){
-string s="salut"+i;
+/**for (int i=0;i<sortie.hauteur;i++){
+string s="salut";
 sortie.ajout_ligne(s);
-}
+}**/
+sortie.se_dessiner();
+entree.se_dessiner();
 
+//sortie.affichage();
+while(true){
 
+sortie.refresh();
+entree.refresh();
+
+entree.editer(sortie,true);
+entree.raz();
+sortie.raz();
 sortie.affichage();
 
-
-
 update_panels();
-doupdate();
+//doupdate();
+}
+
 
 getch();
 
