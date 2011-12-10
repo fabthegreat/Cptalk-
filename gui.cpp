@@ -9,12 +9,9 @@ output sortie(xterm.hauteur,xterm.largeur);
 input entree(xterm.hauteur,xterm.largeur);
 
 
-/**for (int i=0;i<sortie.hauteur;i++){
-string s="salut";
-sortie.ajout_ligne(s);
-}**/
 sortie.se_dessiner();
 entree.se_dessiner();
+
 
 //sortie.affichage();
 while(true){
@@ -62,7 +59,6 @@ fenetres[1]=newwin(3,max_col,max_lin-3,0);
 //wborder(fenetres[0],' ',' ',' ','#',' ',' ',' ',' ');
 box(fenetres[0],0,0);
 box(fenetres[1],0,0);
-//box(fenetres[1],0,0);
 
 panels[0]= new_panel(fenetres[0]);
 panels[1]= new_panel(fenetres[1]);
