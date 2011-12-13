@@ -8,8 +8,25 @@
 
 using namespace std;
 
+enum type_mode{all,message,presence,commande};
 
-typedef vector<string> buffer;
+class ligne{
+		public:
+		string str_ligne;
+		type_mode categorie;
+
+
+		vector<ligne> cmdfilter_bystr(string s);
+		vector<ligne> cmdfilter_bytype(int a);
+	
+		private:
+		string destinataire;
+};
+
+// amené a être le même
+typedef vector<ligne> buffer_in;
+typedef vector<ligne> buffer_out;
+
 
 
 class terminal {
@@ -38,16 +55,16 @@ class output {
 		
 		void se_dessiner();
 		void refresh();
-		void ajout_ligne(string& s);
-		void affichage();
+		void ajout_ligne(ligne& l);
+		void affichage(type_mode tm);
 		void raz();
-
+		type_mode mode;
 
 
 	private:
 		WINDOW* fenetre; // pointeur vers la fenetre concernee
 		PANEL* panel;
-		buffer historique;
+		buffer_out historique;
 		int indice_affichage;
 
 
@@ -62,29 +79,21 @@ class input {
 		void refresh();
 		void editer(output& out, bool print=true);
 		void analyse_inputchar(int b, string& s, int& i);
-		void ajout_ligne(string& s);
+		bool analyse_commande(string& s,ligne& l);
+		void ajout_ligne(ligne& l);
 		void affichage(string& s);
 		void raz();
 
 		int hauteur; // nb_lignes
 		int largeur; // nb_colonnes
+		type_mode mode;
 
 	private:
 		WINDOW* fenetre; // pointeur vers la fenetre concernee
 		PANEL* panel;
-		buffer historique;
+		buffer_in historique;
 		int indice_affichage;
 };
 
 
-class ligne{
-		public:
-		string str_ligne;
-		enum type_ligne{message,presence};
-
-		vector<ligne> cmdfilter_bystr(string s);
-		vector<ligne> cmdfilter_bytype(int a);
-	
-
-};
 

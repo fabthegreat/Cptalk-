@@ -18,12 +18,35 @@ terminal::~terminal(){
 	endwin();
 }
 
+//////// INPUT et OUTPUT /////////////////
 
-
+//////////////////////////////////////////
+//---------->Constructeurs et destructeurs
 output::output(int a, int b)
-:hauteur(a-3),largeur(b),indice_affichage(0){}
+:hauteur(a-3),largeur(b),mode(all),indice_affichage(0){}
 
 output::~output(){
+
+}
+
+
+
+input::input(int a, int b)
+:hauteur(a),largeur(b),mode(all),indice_affichage(0){
+}
+
+input::~input(){
+}
+
+
+////////////////////////////////////////
+//----------> Affichage des Panels
+void input::se_dessiner(){
+	fenetre=newwin(3,largeur,hauteur-3,0);
+	keypad(fenetre, TRUE);
+	box(fenetre,0,0);
+	panel= new_panel(fenetre);
+	mvwprintw(fenetre,1,1,"> ");
 
 }
 
@@ -34,31 +57,8 @@ void output::se_dessiner(){
 	panel= new_panel(fenetre);
 
 }
-
-
-void output::ajout_ligne(string& s){
-
-historique.push_back(s);
-
-}
-
-
-void output::affichage(){
-		
-		int j=0;
-		for(unsigned int i=max(0,(int)historique.size()-hauteur+2);i<historique.size();i++){
-			
-			char *a = new char [historique[i].size()+1];
-			strcpy (a, historique[i].c_str());
-			
-			mvwprintw(fenetre,++j,1,"%s",a);
-			delete a;
-		}
-		
-
-
-}
-
+////////////////////////////////////////
+//----------> Fonctions de MAJ
 void output::refresh(){
 
 	wrefresh(fenetre);
@@ -70,33 +70,85 @@ void output::raz(){
 		this->se_dessiner();
 }
 
-input::input(int a, int b)
-:hauteur(a),largeur(b),indice_affichage(0){
-}
-
-input::~input(){
-}
-
-void input::se_dessiner(){
-	fenetre=newwin(3,largeur,hauteur-3,0);
-	keypad(fenetre, TRUE);
-	box(fenetre,0,0);
-	panel= new_panel(fenetre);
-	mvwprintw(fenetre,1,1,"> ");
-
-}
-
 void input::refresh(){
 
 	wrefresh(fenetre);
 }
 
+void input::raz(){
+
+		werase(fenetre);
+		this->se_dessiner();
+}
+
+
+
+
+////////////////////////////////////////
+//----------> Affichage des lignes
+void output::affichage(type_mode tm){
+		
+		int j=0;
+		for(unsigned int i=max(0,(int)historique.size()-hauteur+2);i<historique.size();i++){
+			
+			
+			if ( historique[i].categorie == tm ){	
+				char *a = new char [historique[i].str_ligne.size()+1];
+				strcpy (a, historique[i].str_ligne.c_str());
+			
+				mvwprintw(fenetre,++j,1,"%s",a);
+				delete a;
+			}
+		}
+		
+
+
+}
+
+void input::affichage(string& s){
+		
+			
+			char *a = new char [s.size()+1];
+			strcpy (a, s.c_str());
+			raz();	
+			mvwprintw(fenetre,1,3,"%s",a);
+			delete a;
+		
+
+
+}
+
+
+
+////////////////////////////////////////
+//----------> Ajout dans les historiques
+void output::ajout_ligne(ligne& l){
+
+historique.push_back(l);
+
+}
+
+
+void input::ajout_ligne(ligne& l){
+
+historique.push_back(l);
+
+}
+
+
+
+
+
+////////////////////////////////////////
+//----------> Spécifique INPUT
 void input::editer(output& out, bool print){
 
 		
 		int b; // char entré
 		int i=0; //position du curseur
 		string s;
+		ligne l;
+
 		// chaque caractere tapé est analysé un par un:
 		// caractère normal: copié dans la chaine à l indice du curseur
 		// caractère spécial: déplacement du curseur, suppression ou insertion de caractere dans la chaine
@@ -113,23 +165,17 @@ void input::editer(output& out, bool print){
 		
 
 		}
-		// analyse de la string...	
-		// Raccord avec le code Core...
-
-	 	if (!s.empty()){
-		ajout_ligne(s);
+		
+		// detecter ligne vide et parsage de la string			
+	 	if (!s.empty() && analyse_commande(s,l)){
+		
+				
+		ajout_ligne(l);
 		indice_affichage=historique.size();
 
 
-		if ( (print == true) && (s.size()!=0) ) out.ajout_ligne(s);
+		if ( (print == true) && (s.size()!=0) ) out.ajout_ligne(l);
 		}
-}
-
-
-void input::raz(){
-
-		werase(fenetre);
-		this->se_dessiner();
 }
 
 
@@ -157,7 +203,7 @@ void input::analyse_inputchar(int b, string& s, int& i){
 		else if (b == KEY_UP){
 				if (!historique.empty()){	
 						indice_affichage=max(0,indice_affichage-1);
-						s=historique[indice_affichage];
+						s=historique[indice_affichage].str_ligne;
 						affichage(s);
 				}
 		}		
@@ -165,7 +211,7 @@ void input::analyse_inputchar(int b, string& s, int& i){
 				if (!historique.empty()){	
 						int taille=historique.size()-1;
 						indice_affichage=min(taille,indice_affichage+1);
-						s=historique[indice_affichage];
+						s=historique[indice_affichage].str_ligne;
 						affichage(s);
 				}
 		}		
@@ -180,24 +226,21 @@ void input::analyse_inputchar(int b, string& s, int& i){
 }
 
 
+bool input::analyse_commande(string& s,ligne& l){
 
 
-void input::affichage(string& s){
-		
-			
-			char *a = new char [s.size()+1];
-			strcpy (a, s.c_str());
-			raz();	
-			mvwprintw(fenetre,1,3,"%s",a);
-			delete a;
-		
+// parser la commande
+l.str_ligne=s;
+l.categorie=message; //provisoirement
 
 
-}
+
+return true;
 
 
-void input::ajout_ligne(string& s){
-
-historique.push_back(s);
 
 }
+
+
+
+
