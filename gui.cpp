@@ -20,7 +20,7 @@ while(true){
 	entree.refresh();
 
 	entree.editer(sortie,true);
-	sortie.affichage(all);
+	sortie.affichage();
 	
 	entree.raz();
 	update_panels();

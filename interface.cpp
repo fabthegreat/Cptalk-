@@ -86,13 +86,13 @@ void input::raz(){
 
 ////////////////////////////////////////
 //----------> Affichage des lignes
-void output::affichage(type_mode tm){
+void output::affichage(){
 		
 		int j=0;
 		for(unsigned int i=max(0,(int)historique.size()-hauteur+2);i<historique.size();i++){
 			
 			
-			if ( historique[i].categorie == tm ){	
+			if ( (historique[i].categorie == mode) || (mode == all)){	
 				char *a = new char [historique[i].str_ligne.size()+1];
 				strcpy (a, historique[i].str_ligne.c_str());
 			
@@ -167,13 +167,14 @@ void input::editer(output& out, bool print){
 		}
 		
 		// detecter ligne vide et parsage de la string			
-	 	if (!s.empty() && analyse_commande(s,l)){
-		
-				
+	 	if (!s.empty()){
+		bool tf;
+		tf=analyse_commande(s,l);
 		ajout_ligne(l);
 		indice_affichage=historique.size();
 
 
+				
 		if ( (print == true) && (s.size()!=0) ) out.ajout_ligne(l);
 		}
 }
@@ -229,18 +230,48 @@ void input::analyse_inputchar(int b, string& s, int& i){
 bool input::analyse_commande(string& s,ligne& l){
 
 
-// parser la commande
-l.str_ligne=s;
-l.categorie=message; //provisoirement
+	l.str_ligne=s;
+	string cmd;
+
+	detection_commande(s, cmd);
+
+	if (cmd.empty()){
+		l.categorie=message; //provisoirement
+	return true;
+	}
+	else if(cmd=="/message"){
+		l.str_ligne="Detection d'une commande message";
+		l.categorie=commande; //provisoirement
+	return true;
+	}
+	else{
+	l.categorie=all; //provisoirement
+	return false;
+	}
 
 
-
-return true;
 
 
 
 }
 
+void input::detection_commande(string& s,string& commande){
+	
+	size_t pos_vide;	
+	
+	if (s[0]=='/'){
+		
+		pos_vide=s.find_first_of(" ");
+		if (pos_vide!=s.npos){	
+			commande=s.substr(0,pos_vide);}
+		else{
+			commande=s.substr(0,s.size());}
+		}
 
+		
+
+
+
+}
 
 
