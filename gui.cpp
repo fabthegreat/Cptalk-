@@ -20,6 +20,8 @@ while(true){
 	entree.refresh();
 
 	entree.editer(sortie,true);
+	
+	sortie.raz();
 	sortie.affichage();
 	
 	entree.raz();

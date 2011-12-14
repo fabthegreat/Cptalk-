@@ -168,8 +168,8 @@ void input::editer(output& out, bool print){
 		
 		// detecter ligne vide et parsage de la string			
 	 	if (!s.empty()){
-		bool tf;
-		tf=analyse_commande(s,l);
+		
+		out.mode=analyse_commande(s,l);
 		ajout_ligne(l);
 		indice_affichage=historique.size();
 
@@ -227,7 +227,7 @@ void input::analyse_inputchar(int b, string& s, int& i){
 }
 
 
-bool input::analyse_commande(string& s,ligne& l){
+type_mode input::analyse_commande(string& s,ligne& l){
 
 
 	l.str_ligne=s;
@@ -237,16 +237,36 @@ bool input::analyse_commande(string& s,ligne& l){
 
 	if (cmd.empty()){
 		l.categorie=message; //provisoirement
-	return true;
+	return all;
 	}
-	else if(cmd=="/message"){
-		l.str_ligne="Detection d'une commande message";
+	else if(cmd=="all"){
+		l.str_ligne='/'+cmd;
 		l.categorie=commande; //provisoirement
-	return true;
+	return all;
+	}
+	else if(cmd=="commande"){
+		l.str_ligne='/'+cmd;
+		l.categorie=commande; //provisoirement
+	return commande;
+	}
+	else if(cmd=="message"){
+		l.str_ligne='/'+cmd;
+		l.categorie=commande; //provisoirement
+	return message;
+	}
+	else if(cmd=="presence"){
+		l.str_ligne='/'+cmd;
+		l.categorie=commande; //provisoirement
+	return presence;
+	}
+	else if(cmd=="contacts"){
+		l.str_ligne='/'+cmd;
+		l.categorie=commande; //provisoirement
+	return all;
 	}
 	else{
-	l.categorie=all; //provisoirement
-	return false;
+	l.categorie=presence; //provisoirement
+	return all;
 	}
 
 
@@ -261,12 +281,16 @@ void input::detection_commande(string& s,string& commande){
 	
 	if (s[0]=='/'){
 		
-		pos_vide=s.find_first_of(" ");
+		pos_vide=s.find_first_of(" "); // à vérifier, améliorer clairement la fonction de parsage!!
+	
+
 		if (pos_vide!=s.npos){	
-			commande=s.substr(0,pos_vide);}
+			commande=s.substr(1,pos_vide);}
 		else{
-			commande=s.substr(0,s.size());}
-		}
+			commande=s.substr(1,s.size());}
+		
+	
+	}
 
 		
 

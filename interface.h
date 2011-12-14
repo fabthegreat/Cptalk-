@@ -79,7 +79,7 @@ class input {
 		void refresh();
 		void editer(output& out, bool print=true);
 		void analyse_inputchar(int b, string& s, int& i);
-		bool analyse_commande(string& s,ligne& l);
+		type_mode analyse_commande(string& s,ligne& l);
 		void detection_commande(string& s,string& c);
 		void ajout_ligne(ligne& l);
 		void affichage(string& s);
