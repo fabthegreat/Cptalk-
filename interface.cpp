@@ -86,20 +86,104 @@ void input::raz(){
 
 ////////////////////////////////////////
 //----------> Affichage des lignes
-void output::affichage(){
-		
-		int j=0;
-		for(unsigned int i=max(0,(int)historique.size()-hauteur+2);i<historique.size();i++){
+void output::affichage(unsigned int p,bool auto_print){
+	
+//WARNING: a retravailler///
+//p est l'indice de debut d'affichage. Verifier qu'il n'est pas > à historique.size
+//vérifier que p+hauteur est < historique.size
+// se renseigner sur les unsigned int
+
+
+unsigned int pi, pf;
+
+//affichage automatique: dernier affiché =  taille de l'historique
+//
+//
+//  |-----------------------|	0 | historique.size()-hauteur
+// ||						||
+// ||						||
+// ||						||
+//  |-----------------------| hauteur <---------
+// ||						||					|
+// ||						||					|
+// ||						||					|
+// ||-----------------------|| historique.size()|
+
+
+// Cas n°1:
+// hauteur < historique.size()
+// pi=historique.size()-hauteur
+// pf=historique.size()
+
+// Cas n°2:
+// hauteur > historique.size()
+// pi=0
+// pf=historique.size()
+
+
+//affichage indexé: suivant la position de la premiere ligne dans l'historique
+//
+//
+//  |-----------------------|	0
+//  |						|
+// ||-----------------------|| p
+// ||						||
+// ||						||
+// ||						||
+// ||-----------------------|| p+hauteur
+//  |						|
+//  |-----------------------| historique.size
+
+// Cas n°1:
+// p<historique.size(); 
+// pi=p
+//		---> p+hauteur<historique.size()
+//			 pf=p+hauteur
+//		---> p+hauteur>historique.size()
+//			 pf=historique.size()
+
+// Cas n°2:
+// p>historique.size(); 
+//		---> p+hauteur>historique.size()
+//			 pf=historique.size()
+
+
+
+
+
+
+if (auto_print==false){
+	pi=p;
+	pf=p+hauteur;
+
+	if (pi>historique.size()){
+		pi=historique.size();
+	}
+
+	if (pf>historique.size()){
+		pf=historique.size();
+	}
+
+}
+else{
+	
+	pi=max(0,(int)historique.size()-hauteur+2);
+	pf=historique.size();
+}
+
+
+int j=0;	
+for(unsigned int i=pi;i<pf;i++){
 			
 			
-			if ( (historique[i].categorie == mode) || (mode == all)){	
-				char *a = new char [historique[i].str_ligne.size()+1];
-				strcpy (a, historique[i].str_ligne.c_str());
+	if ( (historique[i].categorie == mode) || (mode == all)){	
+		char *a = new char [historique[i].str_ligne.size()+1];
+		strcpy (a, historique[i].str_ligne.c_str());
 			
-				mvwprintw(fenetre,++j,1,"%s",a);
-				delete a;
-			}
-		}
+		mvwprintw(fenetre,++j,1,"%s",a);
+		delete a;
+	}
+}
 		
 
 
@@ -107,7 +191,8 @@ void output::affichage(){
 
 void input::affichage(string& s){
 		
-			
+			//ATTENTION: remettre le curseur à la fin de la nouvelle string 
+			//=> erreur pour le moment si la chaine d avant est plus longue qye la nouvelle			
 			char *a = new char [s.size()+1];
 			strcpy (a, s.c_str());
 			raz();	
@@ -182,6 +267,7 @@ void input::editer(output& out, bool print){
 
 void input::analyse_inputchar(int b, string& s, int& i){
 		
+		// Rajouter Page Up et Page Down
 		if (b == KEY_LEFT){
 		i=max(0,i-1);
 				//s.insert(i++,1,b);
@@ -205,7 +291,7 @@ void input::analyse_inputchar(int b, string& s, int& i){
 				if (!historique.empty()){	
 						indice_affichage=max(0,indice_affichage-1);
 						s=historique[indice_affichage].str_ligne;
-						affichage(s);
+						affichage(s); 
 				}
 		}		
 		else if (b == KEY_DOWN){
@@ -281,8 +367,9 @@ void input::detection_commande(string& s,string& commande){
 	
 	if (s[0]=='/'){
 		
-		pos_vide=s.find_first_of(" "); // à vérifier, améliorer clairement la fonction de parsage!!
-	
+		pos_vide=s.find_first_of(" "); 
+		// à vérifier, améliorer clairement la fonction de parsage!!
+		//pas sur que ca marche actuellement	
 
 		if (pos_vide!=s.npos){	
 			commande=s.substr(1,pos_vide);}
