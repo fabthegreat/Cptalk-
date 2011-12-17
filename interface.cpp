@@ -23,7 +23,7 @@ terminal::~terminal(){
 //////////////////////////////////////////
 //---------->Constructeurs et destructeurs
 output::output(int a, int b)
-:hauteur(a-3),largeur(b),mode(all),indice_affichage(0){}
+:hauteur(a-10),largeur(b),mode(all),indice_affichage(0){}
 
 output::~output(){
 
@@ -93,7 +93,6 @@ void output::affichage(unsigned int p,bool auto_print){
 //vérifier que p+hauteur est < historique.size
 // se renseigner sur les unsigned int
 
-
 unsigned int pi, pf;
 
 //affichage automatique: dernier affiché =  taille de l'historique
@@ -147,28 +146,39 @@ unsigned int pi, pf;
 //		---> p+hauteur>historique.size()
 //			 pf=historique.size()
 
+vector<ligne> tampon;
+
+for(unsigned int i=0;i<historique.size();i++){
+	if ( (historique[i].categorie == mode) || (mode == all)){	
+		tampon.push_back(historique[i]);
 
 
-
+	}
+}
 
 
 if (auto_print==false){
 	pi=p;
 	pf=p+hauteur;
 
-	if (pi>historique.size()){
-		pi=historique.size();
+	if (pi>tampon.size()){
+		pi=tampon.size();
 	}
 
-	if (pf>historique.size()){
-		pf=historique.size();
+	if (pf>tampon.size()){
+		pf=tampon.size();
 	}
 
 }
 else{
-	
-	pi=max(0,(int)historique.size()-hauteur+2);
-	pf=historique.size();
+
+		if ( hauteur > tampon.size()+1 ){
+			pi=0;
+			pf=tampon.size(); 
+		} else {
+				pi=tampon.size()-hauteur+2;
+				pf=tampon.size();
+		}
 }
 
 
@@ -176,13 +186,11 @@ int j=0;
 for(unsigned int i=pi;i<pf;i++){
 			
 			
-	if ( (historique[i].categorie == mode) || (mode == all)){	
-		char *a = new char [historique[i].str_ligne.size()+1];
-		strcpy (a, historique[i].str_ligne.c_str());
+		char *a = new char [tampon[i].str_ligne.size()+1];
+		strcpy (a, tampon[i].str_ligne.c_str());
 			
 		mvwprintw(fenetre,++j,1,"%s",a);
 		delete a;
-	}
 }
 		
 

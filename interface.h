@@ -50,8 +50,8 @@ class output {
 		output(int a, int b);
 		~output();
 		
-		int hauteur; // nb_lignes
-		int largeur; // nb_colonnes
+		unsigned int hauteur; // nb_lignes
+		unsigned int largeur; // nb_colonnes
 		
 		void se_dessiner();
 		void refresh();
@@ -85,8 +85,8 @@ class input {
 		void affichage(string& s);
 		void raz();
 
-		int hauteur; // nb_lignes
-		int largeur; // nb_colonnes
+		unsigned int hauteur; // nb_lignes
+		unsigned int largeur; // nb_colonnes
 		type_mode mode;
 
 	private:
