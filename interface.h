@@ -56,7 +56,7 @@ class output {
 		void se_dessiner();
 		void refresh();
 		void ajout_ligne(ligne& l);
-		void affichage(bool auto_print=true);
+		void affichage(bool auto_print=true, bool inc=true);
 		void raz();
 		type_mode mode;
 

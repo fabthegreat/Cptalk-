@@ -23,7 +23,7 @@ terminal::~terminal(){
 //////////////////////////////////////////
 //---------->Constructeurs et destructeurs
 output::output(int a, int b)
-:hauteur(a-10),largeur(b),mode(all),indice_affichage(0){}
+:hauteur(a-15),largeur(b),mode(all),indice_affichage(0){}
 
 output::~output(){
 
@@ -86,7 +86,7 @@ void input::raz(){
 
 ////////////////////////////////////////
 //----------> Affichage des lignes
-void output::affichage(bool auto_print){
+void output::affichage(bool auto_print,bool inc){
 	
 unsigned int pi, pf;
 
@@ -151,28 +151,51 @@ for(unsigned int i=0;i<historique.size();i++){
 }
 
 if ( auto_print == false ){
-	pi=curseur;
-	pf=curseur+hauteur;
-
-	if (pi>tampon.size()){
-		pi=tampon.size();
-	}
-
-	if (pf>tampon.size()){
+	
+	
+	if ( (hauteur > tampon.size())){
+		pi=0;
+		curseur=0;
 		pf=tampon.size();
+	} 
+	//else if ( curseur == 0){
+	//pi=0;
+	//pf=tampon.size()-1;
+	//}
+	else {
+			//pi=--curseur;
+			//pf=curseur+hauteur;
+		
+		if (inc==true){
+			if (curseur ==  0) {
+				pi=curseur;
+			} else {
+				pi=--curseur;
+			}
+		}
+		else {
+			if (curseur == tampon.size()-1) {
+				pi=curseur;
+			} else {
+				pi=++curseur;
+			}
+		}
+		
+		pf=min(tampon.size(),curseur+hauteur-2); 
 	}
 
 }
 else{
 
+	// remplacer le if par un max(0,tampon.size()-hauteur+2)
 	if ( hauteur > tampon.size()+1 ){
 		pi=0;
-		//curseur=0;
+		curseur=0;
 		pf=tampon.size(); 
 	} else {
 
 			pi=tampon.size()-hauteur+2;
-			//curseur=tampon.size()-hauteur+2;
+			curseur=tampon.size()-hauteur+2;
 			pf=tampon.size();
 	}
 }
@@ -307,7 +330,14 @@ void input::analyse_inputchar(output& out,int b, string& s, int& i){
 				}
 		}
 		else if (b == KEY_PPAGE){
-					
+				out.raz();
+				out.affichage(false,true);	
+				update_panels();
+
+		}else if (b == KEY_NPAGE){
+				out.raz();
+				out.affichage(false,false);	
+				update_panels();
 
 		}		
 		else if (b == '\n'){}
