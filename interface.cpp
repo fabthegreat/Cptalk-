@@ -86,13 +86,8 @@ void input::raz(){
 
 ////////////////////////////////////////
 //----------> Affichage des lignes
-void output::affichage(unsigned int p,bool auto_print){
+void output::affichage(bool auto_print){
 	
-//WARNING: a retravailler///
-//p est l'indice de debut d'affichage. Verifier qu'il n'est pas > à historique.size
-//vérifier que p+hauteur est < historique.size
-// se renseigner sur les unsigned int
-
 unsigned int pi, pf;
 
 //affichage automatique: dernier affiché =  taille de l'historique
@@ -147,19 +142,17 @@ unsigned int pi, pf;
 //			 pf=historique.size()
 
 vector<ligne> tampon;
+static unsigned int curseur; //curseur de position à retenir
 
 for(unsigned int i=0;i<historique.size();i++){
 	if ( (historique[i].categorie == mode) || (mode == all)){	
 		tampon.push_back(historique[i]);
-
-
 	}
 }
 
-
-if (auto_print==false){
-	pi=p;
-	pf=p+hauteur;
+if ( auto_print == false ){
+	pi=curseur;
+	pf=curseur+hauteur;
 
 	if (pi>tampon.size()){
 		pi=tampon.size();
@@ -172,13 +165,16 @@ if (auto_print==false){
 }
 else{
 
-		if ( hauteur > tampon.size()+1 ){
-			pi=0;
-			pf=tampon.size(); 
-		} else {
-				pi=tampon.size()-hauteur+2;
-				pf=tampon.size();
-		}
+	if ( hauteur > tampon.size()+1 ){
+		pi=0;
+		//curseur=0;
+		pf=tampon.size(); 
+	} else {
+
+			pi=tampon.size()-hauteur+2;
+			//curseur=tampon.size()-hauteur+2;
+			pf=tampon.size();
+	}
 }
 
 
@@ -186,11 +182,11 @@ int j=0;
 for(unsigned int i=pi;i<pf;i++){
 			
 			
-		char *a = new char [tampon[i].str_ligne.size()+1];
-		strcpy (a, tampon[i].str_ligne.c_str());
+	char *a = new char [tampon[i].str_ligne.size()+1];
+	strcpy (a, tampon[i].str_ligne.c_str());
 			
-		mvwprintw(fenetre,++j,1,"%s",a);
-		delete a;
+	mvwprintw(fenetre,++j,1,"%s",a);
+	delete a;
 }
 		
 
@@ -251,7 +247,7 @@ void input::editer(output& out, bool print){
 		
 		b=mvwgetch(fenetre,1,i+3); //reception basique d'un caractere
 		
-		analyse_inputchar(b,s,i); // analyse du caractere, transformation de la chaine et retour de l'indice de position 	
+		analyse_inputchar(out,b,s,i); // analyse du caractere, transformation de la chaine et retour de l'indice de position 	
 		// penser à mettre un const b	
 		//reafficher la string
 		
@@ -273,7 +269,7 @@ void input::editer(output& out, bool print){
 }
 
 
-void input::analyse_inputchar(int b, string& s, int& i){
+void input::analyse_inputchar(output& out,int b, string& s, int& i){
 		
 		// Rajouter Page Up et Page Down
 		if (b == KEY_LEFT){
@@ -309,6 +305,10 @@ void input::analyse_inputchar(int b, string& s, int& i){
 						s=historique[indice_affichage].str_ligne;
 						affichage(s);
 				}
+		}
+		else if (b == KEY_PPAGE){
+					
+
 		}		
 		else if (b == '\n'){}
 		else { 

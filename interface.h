@@ -56,7 +56,7 @@ class output {
 		void se_dessiner();
 		void refresh();
 		void ajout_ligne(ligne& l);
-		void affichage(unsigned int p=0,bool auto_print=true);
+		void affichage(bool auto_print=true);
 		void raz();
 		type_mode mode;
 
@@ -78,7 +78,7 @@ class input {
 		void se_dessiner();
 		void refresh();
 		void editer(output& out, bool print=true);
-		void analyse_inputchar(int b, string& s, int& i);
+		void analyse_inputchar(output& out,int b, string& s, int& i);
 		type_mode analyse_commande(string& s,ligne& l);
 		void detection_commande(string& s,string& c);
 		void ajout_ligne(ligne& l);
