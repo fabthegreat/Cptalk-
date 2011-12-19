@@ -8,7 +8,7 @@
 
 using namespace std;
 
-enum type_mode{all,message,presence,commande};
+enum type_mode{all,annonce,message,presence,commande};
 
 class ligne{
 		public:
@@ -35,7 +35,6 @@ class terminal {
 		~terminal();
 
 
-
 		int hauteur; //nb_lignes
 		int largeur; //nb_colonnes
 	private:
@@ -57,6 +56,7 @@ class output {
 		void refresh();
 		void ajout_ligne(ligne& l);
 		void affichage(bool auto_print=true, bool inc=true);
+		void annoncer(string& s);
 		void raz();
 		type_mode mode;
 

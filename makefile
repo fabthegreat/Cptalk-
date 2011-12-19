@@ -6,10 +6,10 @@ EXEC_GUI=gui
 
 all: cptalk
 
-cptalk: main.o Core.o
-	$(CXX) -o $(EXEC_CPTALK) main.o Core.o $(CXXFLAGS) $(LDFLAGS)
+cptalk: main.o Core.o interface.o
+	$(CXX) -o $(EXEC_CPTALK) main.o Core.o interface.o $(CXXFLAGS) $(LDFLAGS)
 
-main.o Core.o: main.cpp Core.cpp Core.h interface.cpp interface.h
+main.o Core.o: main.cpp Core.cpp Core.h interface.h
 	$(CXX) -c main.cpp Core.cpp interface.cpp $(CXXFLAGS) $(LDFLAGS)
 
 gui: interface.o gui.o 

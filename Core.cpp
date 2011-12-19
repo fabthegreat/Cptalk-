@@ -1,5 +1,11 @@
 #include "Core.h"
 
+Core::Core(terminal xterm)
+:sortie(xterm.hauteur,xterm.largeur),entree(xterm.hauteur,xterm.largeur){
+}
+
+
+
 void Core::doSomething()
 {
 
@@ -7,8 +13,11 @@ void Core::doSomething()
 
 void Core::onConnect()
 		 {
-				 std::cout << "connecté en mode normal!" << std::endl ;			//             // presence info
-				 connected=true;
+				 //std::cout << "connecté en mode normal!" << std::endl ;			//             // presence info
+				 
+				string connexion="Connecté au réseau Jabber";
+				sortie.annoncer(connexion);
+				connected=true;
 		}
 
 void Core::onDisconnect(ConnectionError e)

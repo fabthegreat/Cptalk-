@@ -23,11 +23,10 @@ terminal::~terminal(){
 //////////////////////////////////////////
 //---------->Constructeurs et destructeurs
 output::output(int a, int b)
-:hauteur(a-15),largeur(b),mode(all),indice_affichage(0){}
+:hauteur(a-3),largeur(b),mode(all),indice_affichage(0){}
 
-output::~output(){
 
-}
+output::~output(){}
 
 
 
@@ -86,8 +85,28 @@ void input::raz(){
 
 ////////////////////////////////////////
 //----------> Affichage des lignes
-void output::affichage(bool auto_print,bool inc){
+void output::annoncer(string& s){
+// Annonces d'accueil
+	ligne l;
+	l.str_ligne=s;
+	l.categorie=annonce;
+
+	ajout_ligne(l);
+	raz();
+	affichage();
 	
+	update_panels();
+
+}
+
+
+
+
+
+void output::affichage(bool auto_print,bool inc){
+// A ameliorer car pêrformances mediocres a partir d'un certain nombre d elements!
+
+
 unsigned int pi, pf;
 
 //affichage automatique: dernier affiché =  taille de l'historique
@@ -387,6 +406,11 @@ type_mode input::analyse_commande(string& s,ligne& l){
 		l.str_ligne='/'+cmd;
 		l.categorie=commande; //provisoirement
 	return all;
+	}
+	else if(cmd=="annonce"){
+		l.str_ligne='/'+cmd;
+		l.categorie=commande; //provisoirement
+	return annonce;
 	}
 	else{
 	l.categorie=presence; //provisoirement

@@ -1,3 +1,4 @@
+#include "interface.h"
 #include <iostream>
 #include <string>
 #include <gloox/client.h>
@@ -13,6 +14,13 @@ using namespace gloox;
 class Core : public ConnectionListener, public PresenceHandler, public MessageSessionHandler, public MessageHandler, public RosterListener
 {
 public:
+Core(terminal xterm);
+~Core();
+
+output sortie;
+input entree;
+		
+		
 // à la connexion
 void doSomething();
 void onConnect();
@@ -40,7 +48,6 @@ bool handleSubscriptionRequest (const JID &jid, const std::string &msg);
 bool handleUnsubscriptionRequest (const JID &jid, const std::string &msg);
 void handleNonrosterPresence (const Presence &presence);
 void handleRosterError (const IQ &iq);
-
 
 
 };
