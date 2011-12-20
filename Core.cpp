@@ -1,51 +1,53 @@
 #include "Core.h"
 
-Core::Core(terminal xterm)
+Core::Core(terminal& xterm)
 :sortie(xterm.hauteur,xterm.largeur),entree(xterm.hauteur,xterm.largeur){
 }
 
-
+Core::~Core(){}
 
 void Core::doSomething()
 {
 
 }
 
+
+void Core::annonce(string s){
+				sortie.annoncer(s);
+				entree.refresh();
+				update_panels();
+}
+
+
 void Core::onConnect()
 		 {
-				 //std::cout << "connecté en mode normal!" << std::endl ;			//             // presence info
-				 
-				string connexion="Connecté au réseau Jabber";
-				sortie.annoncer(connexion);
-				connected=true;
+			annonce("Connexion normale reussie");				 
+			connected=true;
 		}
 
 void Core::onDisconnect(ConnectionError e)
 		 {
-				 std::cout << "deconnecté!" << std::endl;			//             // presence info
-				//             // presence info
 		}
 
 bool Core::onTLSConnect(const CertInfo& info)
 		 {
-				std::cout << "connecté en TLS!" << std::endl;			//             // presence info
-				//             // presence info
-				return 1;
+			annonce("Connexion TLS reussie");				 
+			return 1;
 		}
 
 
 void Core::handleMessageSession(MessageSession* session)
 {
-	session->registerMessageHandler(this);
-	session->send( "Message de session!", "No Subject" );
+		//session->registerMessageHandler(this);
+		//session->send( "Message de session!", "No Subject" );
 }
 
 
 
 void Core::handleMessage(const Message& msg, MessageSession* session)
 {
-	std::cout << "un message a été envoyé automatiquement" << std::endl;
-	session->send( "Message de message!", "No Subject" );
+		//std::cout << "un message a été envoyé automatiquement" << std::endl;
+		//session->send( "Message de message!", "No Subject" );
 }
 
 void Core::handlePresence (const Presence &presence){
@@ -61,12 +63,13 @@ void Core::handleItemRemoved (const JID &jid){}
 void Core::handleItemUpdated (const JID &jid){}
 void Core::handleItemUnsubscribed (const JID &jid){}
 void Core::handleRoster (const Roster &roster){
-		std::cout << "un contact vient de changer de statut!";
+		//std::cout << "un contact vient de changer de statut!";
 
 }
 void Core::handleRosterPresence (const RosterItem &item, const std::string &resource, Presence::PresenceType presence, const std::string &msg){
 
-		std::cout << "un contact vient de changer de statut!";
+				annonce("Changement de status d'un contact...");				 
+				connected=true;
 }
 
 void Core::handleSelfPresence (const RosterItem &item, const std::string &resource, Presence::PresenceType presence, const std::string &msg){}

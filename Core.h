@@ -14,13 +14,15 @@ using namespace gloox;
 class Core : public ConnectionListener, public PresenceHandler, public MessageSessionHandler, public MessageHandler, public RosterListener
 {
 public:
-Core(terminal xterm);
+Core(terminal& xterm);
 ~Core();
 
 output sortie;
 input entree;
 		
 		
+void annonce(string s);
+
 // à la connexion
 void doSomething();
 void onConnect();

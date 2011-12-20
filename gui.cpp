@@ -12,7 +12,7 @@ input entree(xterm.hauteur,xterm.largeur);
 sortie.se_dessiner();
 entree.se_dessiner();
 
-string annonce="Bienvenue sur Cptalk";
+string annonce=".: Bienvenue sur cptalk :.";
 sortie.annoncer(annonce);
 
 //sortie.affichage();

@@ -95,7 +95,8 @@ void output::annoncer(string& s){
 	raz();
 	affichage();
 	
-	update_panels();
+	refresh();
+	//update_panels();
 
 }
 
