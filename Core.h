@@ -14,19 +14,18 @@ using namespace gloox;
 class Core : public ConnectionListener, public PresenceHandler, public MessageSessionHandler, public MessageHandler, public RosterListener
 {
 public:
-Core(terminal& xterm);
+Core(terminal& xterm,string j="",string passwd="");
 ~Core();
+
+// client
+JID jid;
+Client client;
 
 // interface
 output sortie;
 input entree;
 		
 void annonce(string s);
-
-// client
-/*Client* client;*/
-/*JID jid;*/
-
 
 
 

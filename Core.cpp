@@ -1,7 +1,16 @@
 #include "Core.h"
 
-Core::Core(terminal& xterm)
-:sortie(xterm.hauteur,xterm.largeur),entree(xterm.hauteur,xterm.largeur){
+Core::Core(terminal& xterm, string j, string passwd)
+:jid(j),client(jid,passwd),sortie(xterm.hauteur,xterm.largeur),entree(xterm.hauteur,xterm.largeur){
+
+		/** Chargement des module du client **/
+		client.registerConnectionListener( this );
+		client.registerMessageSessionHandler( this, 0 );
+		client.registerPresenceHandler( this );
+		client.rosterManager()->registerRosterListener(this);
+		
+
+
 }
 
 Core::~Core(){}

@@ -14,25 +14,16 @@ int main() {
 
 		terminal xterm;	
 		
-		Core* core=new Core(xterm);
+		Core* core=new Core(xterm,"bot@lutix.org/cptalk","fab99999");
 		core->connected=false;	
 
-		JID jid( "bot@lutix.org/cptalk" );
-		Client* client = new Client( jid, "fab99999" );
-
-		/** Chargement des module du client **/
-		client->registerConnectionListener( core );
-		client->registerMessageSessionHandler( core, 0 );
-		client->registerPresenceHandler( core );
-		client->rosterManager()->registerRosterListener(core);
-		
-		
+				
 		/** Thread de connexion**/
 		pthread_t my_thread;		
 	
 		/*void *thread_fnc(void *arg)**/
 		//thread pour la connexion en tache de fond	
-		pthread_create(&my_thread, NULL, connect_thread,(void *) client);	
+		pthread_create(&my_thread, NULL, connect_thread,(void *)&core->client);	
 		
 		// Chargement de l'interface
 		interface(core);	
