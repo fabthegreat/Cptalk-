@@ -19,31 +19,24 @@ int main() {
 
 		JID jid( "bot@lutix.org/cptalk" );
 		Client* client = new Client( jid, "fab99999" );
+
 		/** Chargement des module du client **/
 		client->registerConnectionListener( core );
 		client->registerMessageSessionHandler( core, 0 );
 		client->registerPresenceHandler( core );
 		client->rosterManager()->registerRosterListener(core);
 		
-		////RosterManager* liste_roster = new RosterManager(client);
-		////liste_roster->registerRosterListener(core);		
-
-
+		
 		/** Thread de connexion**/
 		pthread_t my_thread;		
 	
 		/*void *thread_fnc(void *arg)**/
-		
+		//thread pour la connexion en tache de fond	
 		pthread_create(&my_thread, NULL, connect_thread,(void *) client);	
 		
-		////pthread_join(my_thread,NULL);
-		////bool start=false;
-		////while ( start == 0 ) { 
+		// Chargement de l'interface
 		interface(core);	
-		////start=core->connected;
-		////}	
 		
-		//start_commandmode();			
 		return 0;
 }
 
@@ -52,7 +45,9 @@ void *connect_thread(void *objet){
 		
 		while (true){
 			((Client*)objet)->connect(false);
-			((Client*)objet)->recv(400);
+			((Client*)objet)->recv(500); 
+			// se connecte au serveur toutes les 0.5 secondes
+			// => diminue la charge CPU
 		}
 		return NULL;
 }

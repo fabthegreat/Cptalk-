@@ -22,6 +22,11 @@ void Core::annonce(string s){
 void Core::onConnect()
 		 {
 			annonce("Connexion normale reussie");				 
+
+			
+
+
+
 			connected=true;
 		}
 
@@ -38,16 +43,13 @@ bool Core::onTLSConnect(const CertInfo& info)
 
 void Core::handleMessageSession(MessageSession* session)
 {
-		//session->registerMessageHandler(this);
-		//session->send( "Message de session!", "No Subject" );
+			annonce("Ouverture d'une session de discussion!");				 
 }
 
 
 
 void Core::handleMessage(const Message& msg, MessageSession* session)
 {
-		//std::cout << "un message a été envoyé automatiquement" << std::endl;
-		//session->send( "Message de message!", "No Subject" );
 }
 
 void Core::handlePresence (const Presence &presence){
@@ -68,7 +70,8 @@ void Core::handleRoster (const Roster &roster){
 }
 void Core::handleRosterPresence (const RosterItem &item, const std::string &resource, Presence::PresenceType presence, const std::string &msg){
 
-				annonce("Changement de status d'un contact...");				 
+				string s="Nouveau status de "+ item.jid()+": "+msg;
+				annonce(s);				 
 				connected=true;
 }
 

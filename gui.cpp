@@ -28,7 +28,6 @@ while(true){
 	
 	entree.raz();
 	update_panels();
-	//doupdate();
 }
 
 

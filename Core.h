@@ -17,11 +17,18 @@ public:
 Core(terminal& xterm);
 ~Core();
 
+// interface
 output sortie;
 input entree;
 		
-		
 void annonce(string s);
+
+// client
+/*Client* client;*/
+/*JID jid;*/
+
+
+
 
 // à la connexion
 void doSomething();
