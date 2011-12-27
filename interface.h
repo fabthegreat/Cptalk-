@@ -4,97 +4,89 @@
 #include <cstring>
 #include <vector>
 #include <iostream>
-/*#include <algorithm>	*/
+/**
+|-----|		   |------|		  |------|
+|INPUT|------->|PARSER|------>|OUTPUT|
+|-----|		   |------|		  |------|
+				  |
+				  |
+				  |
+			    |----|
+			    |CORE|
+			    |----|
+**/
 
 using namespace std;
 
-enum type_mode{all,annonce,message,presence,commande};
-
-class ligne{
-		public:
-		string str_ligne;
-		type_mode categorie;
-
-
-		vector<ligne> cmdfilter_bystr(string s);
-		vector<ligne> cmdfilter_bytype(int a);
-	
-		private:
-		string destinataire;
-};
-
 // amené a être le même
-typedef vector<ligne> buffer_in;
-typedef vector<ligne> buffer_out;
+typedef vector<string> buffer;
 
-
-
-class terminal {
+class Terminal {
 	public:
-		terminal();
-		~terminal();
-
-
-		int hauteur; //nb_lignes
-		int largeur; //nb_colonnes
-	private:
-		WINDOW* fenetre; // pointeur vers la fenetre concernee
-
-};
-
-// peut etre faire de la classe terminal la classe parente des classes output et input....
-
-class output {
-	public:
-		output(int a, int b);
-		~output();
+		Terminal();
+		~Terminal();
 		
-		unsigned int hauteur; // nb_lignes
-		unsigned int largeur; // nb_colonnes
-		
-		void se_dessiner();
-		void refresh();
-		void ajout_ligne(ligne& l);
-		void affichage(bool auto_print=true, bool inc=true);
-		void annoncer(string& s);
-		void raz();
-		type_mode mode;
+		// pour l instant publique
+		unsigned int height; //nb_lignes
+		unsigned int width; //nb_colonnes
 
 
 	private:
-		WINDOW* fenetre; // pointeur vers la fenetre concernee
-		PANEL* panel;
-		buffer_out historique;
-		int indice_affichage;
-
+		WINDOW* window; // pointeur vers la fenetre concernee
 
 };
 
-class input {
-	public:
-		input(int a, int b);
-		~input();
-		
-		void se_dessiner();
-		void refresh();
-		void editer(output& out, bool print=true);
-		void analyse_inputchar(output& out,int b, string& s, int& i);
-		type_mode analyse_commande(string& s,ligne& l);
-		void detection_commande(string& s,string& c);
-		void ajout_ligne(ligne& l);
-		void affichage(string& s);
-		void raz();
+// classe de base Input et Ouput
+class IO {
+		public:
+			IO(unsigned int a, unsigned  int b);
+			~IO();
 
-		unsigned int hauteur; // nb_lignes
-		unsigned int largeur; // nb_colonnes
-		type_mode mode;
+			virtual void draw()=0;
+		
+			unsigned int height; //nb_lignes
+			unsigned int width; //nb_colonnes
+
+			WINDOW* window; // pointeur vers la fenetre concernee
+			PANEL* panel;
+
+};
+
+class Output : public IO {
+	public:
+		Output(Terminal& term);
+		Output(Output& out);
+		~Output();
+
+		void draw();
 
 	private:
-		WINDOW* fenetre; // pointeur vers la fenetre concernee
-		PANEL* panel;
-		buffer_in historique;
-		int indice_affichage;
+
+
 };
+
+
+class Linker {
+	public:
+		Linker(Output& o);
+		~Linker();
+			
+	private:
+		Output& out;
+};
+
+
+class Input: public IO {
+	public:
+		Input(Terminal& term, Linker& l);
+		~Input();
+
+		void draw();
+		
+	private:
+		Linker& link;
+};
+
 
 
 
