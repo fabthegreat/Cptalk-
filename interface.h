@@ -18,14 +18,49 @@
 
 using namespace std;
 
+// Forward declaration for dialog between Linker and ICore_XMPP
+class Linker;
+class ICore_XMPP;
+class Input;
+class Output;
+
+
+
 // amené a être le même
-typedef vector<string> buffer;
+
+enum Type_content {all,message,announce};
+enum Route {route_output,route_XMPP};
+
+
+class Line {
+	public:
+		Line(string s, Type_content tp=all);
+		~Line();
+	
+		string content;
+		Type_content type_content;
+};
+
+typedef vector<Line> Buffer;
+
+class Command {
+	public:
+		Command();
+		~Command();
+
+		Route destination;
+		string content;
+
+	private:
+};
+
 
 class Terminal {
 	public:
 		Terminal();
 		~Terminal();
 		
+		void refresh();
 		// pour l instant publique
 		unsigned int height; //nb_lignes
 		unsigned int width; //nb_colonnes
@@ -39,54 +74,82 @@ class Terminal {
 // classe de base Input et Ouput
 class IO {
 		public:
-			IO(unsigned int a, unsigned  int b);
+			IO(unsigned int a, unsigned int b);
 			~IO();
 
 			virtual void draw()=0;
+			virtual void refresh();
+			virtual void reset();
+			virtual void add_history(Line l);
+			virtual void print_line(Line l,unsigned int i); //i: ligne d'affichage
 		
+		protected:		
 			unsigned int height; //nb_lignes
 			unsigned int width; //nb_colonnes
 
 			WINDOW* window; // pointeur vers la fenetre concernee
 			PANEL* panel;
 
+			Buffer history;
 };
+
 
 class Output : public IO {
 	public:
 		Output(Terminal& term);
-		Output(Output& out);
 		~Output();
 
 		void draw();
+		void print_history(unsigned int i);
 
 	private:
-
-
 };
 
 
 class Linker {
 	public:
-		Linker(Output& o);
+		Linker();
 		~Linker();
 			
+		void command_parser(Line& line); // parser the line
+		void command_analyser(Line& line);
+		void command_router(Line& line); // route the command
+
+		void register_clients(Output& output, ICore_XMPP& icore_xmpp);
+	
 	private:
-		Output& out;
+		ICore_XMPP* ptr_icore_xmpp;
+		Output* ptr_output;
+
 };
 
 
 class Input: public IO {
 	public:
-		Input(Terminal& term, Linker& l);
+		Input(Terminal& term);
 		~Input();
 
 		void draw();
+		void edit(); // gather all input element and send it either to linker or to itself
+		bool char_analysis(int c, unsigned int& i,string& s);
+		void char_action_launcher(); 
+		void register_linker(Linker& linker);
 		
 	private:
-		Linker& link;
+		Linker* ptr_linker;
 };
 
+class ICore_XMPP {
 
+	public:
+		ICore_XMPP();
+		~ICore_XMPP();
+
+		void register_linker(Linker& linker);
+
+	private:
+		Linker* ptr_linker;
+
+};
 
 

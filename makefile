@@ -22,7 +22,7 @@ interface.o gui.o: interface.cpp gui.cpp
 test: new_main.o interface.o
 	$(CXX) -o $(EXEC_TEST) new_main.o interface.o $(CXXFLAGS) $(LDFLAGS)
 
-new_main.o interface.o: new_main.cpp interface.cpp
+new_main.o interface.o: new_main.cpp interface.cpp interface.h
 	$(CXX) -c new_main.cpp interface.cpp $(CXXFLAGS) $(LDFLAGS)
 
 .PHONY: clean mrproper
