@@ -8,7 +8,7 @@ int main() {
 
 		std::cout << "Attente..." << std::endl;
 		
-		//Créer une fabrique?
+		//Créer une fabrique/classe spécifique?
 		Terminal xterm;	
 		Input input(xterm);	
 		Output output(xterm);		
@@ -26,14 +26,20 @@ int main() {
 		Line l1("Bienvenue sur Cptalk");
 		linker.command_router(l1);
 
-		output.print_history(1);
+		output.print_history(0);
 
 		while(true){
+
 				output.refresh();
 				input.refresh();
 				xterm.refresh();
 
 				input.edit();
+
+				//output.reset();
+				input.reset();
+				linker.output_print_history(0);
+				//output.print_history(0);
 
 		}
 

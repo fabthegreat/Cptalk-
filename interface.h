@@ -82,10 +82,18 @@ class IO {
 			virtual void reset();
 			virtual void add_history(Line l);
 			virtual void print_line(Line l,unsigned int i); //i: ligne d'affichage
+			virtual unsigned int& get_index();
+			virtual unsigned int get_history_size();
+			virtual unsigned int get_window_height();
 		
 		protected:		
 			unsigned int height; //nb_lignes
 			unsigned int width; //nb_colonnes
+			
+			unsigned int get_start_index(unsigned int final_index,unsigned int line_number);
+			unsigned int get_final_index(unsigned int start_index,unsigned int line_number);
+
+			unsigned int print_index; //register the index printed
 
 			WINDOW* window; // pointeur vers la fenetre concernee
 			PANEL* panel;
@@ -101,6 +109,7 @@ class Output : public IO {
 
 		void draw();
 		void print_history(unsigned int i);
+		void print_history_last_n(unsigned int n); // print last n lines if possible
 
 	private:
 };
@@ -116,6 +125,14 @@ class Linker {
 		void command_router(Line& line); // route the command
 
 		void register_clients(Output& output, ICore_XMPP& icore_xmpp);
+
+		unsigned int& get_index_output();
+		void output_refresh();
+		void output_reset();
+		void output_lineup();
+		void output_linedown();
+		void output_print_last_n(unsigned int n);
+		void output_print_history(unsigned int i);
 	
 	private:
 		ICore_XMPP* ptr_icore_xmpp;
@@ -132,11 +149,11 @@ class Input: public IO {
 		void draw();
 		void edit(); // gather all input element and send it either to linker or to itself
 		bool char_analysis(int c, unsigned int& i,string& s);
-		void char_action_launcher(); 
 		void register_linker(Linker& linker);
-		
+
 	private:
 		Linker* ptr_linker;
+		void print_string(string s); //i: ligne d'affichage
 };
 
 class ICore_XMPP {
