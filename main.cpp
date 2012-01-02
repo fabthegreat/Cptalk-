@@ -23,8 +23,12 @@ int main() {
 		output.draw();
 		input.draw();
 
-		Line l1("Bienvenue sur Cptalk");
-		linker.command_router(l1);
+		Line message_0("###########################");
+		Line message_1("#    Welcome on cptalk    #");
+		Line message_2("###########################");
+		linker.command_router(message_0);
+		linker.command_router(message_1);
+		linker.command_router(message_2);
 
 		output.print_history(0);
 
@@ -36,10 +40,9 @@ int main() {
 
 				input.edit();
 
-				//output.reset();
+				output.reset();
 				input.reset();
-				linker.output_print_history(0);
-				//output.print_history(0);
+				linker.output_print_last_n(linker.get_output_window_writable_height()); 
 
 		}
 

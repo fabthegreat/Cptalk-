@@ -126,7 +126,8 @@ class Linker {
 
 		void register_clients(Output& output, ICore_XMPP& icore_xmpp);
 
-		unsigned int& get_index_output();
+		unsigned int& get_output_index();
+		unsigned int get_output_window_writable_height();
 		void output_refresh();
 		void output_reset();
 		void output_lineup();
