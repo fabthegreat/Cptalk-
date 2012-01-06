@@ -48,10 +48,11 @@ class Command {
 		Command();
 		~Command();
 
-		Route destination;
-		string content;
-
+		//parser command?
+		
 	private:
+		Route route;
+		string content;
 };
 
 
@@ -164,6 +165,9 @@ class ICore_XMPP {
 		~ICore_XMPP();
 
 		void register_linker(Linker& linker);
+		void send_line(Line line);
+
+
 
 	private:
 		Linker* ptr_linker;

@@ -1,10 +1,52 @@
 #include "interface.h"
+#include "Core.h"
 #include <iostream>
 #include <string>
 
-
+void start_XMPP();
+void start_interface();
+void *connect_thread(void *objet);
 
 int main() {
+
+		start_XMPP();	
+		start_interface();
+		return 0;
+}
+
+void start_XMPP() {
+
+		
+		Core_XMPP* core=new Core_XMPP;
+		core->connected=false;	
+
+		JID jid( "bot@lutix.org/cptalk" );
+		Client* client = new Client( jid, "fab99999" );
+		/** Chargement des module du client **/
+		client->registerConnectionListener( core );
+		client->registerMessageSessionHandler( core, 0 );
+		client->registerPresenceHandler( core );
+		client->rosterManager()->registerRosterListener(core);
+		
+		/** Thread de connexion**/
+		pthread_t my_thread;		
+	
+		
+		pthread_create(&my_thread, NULL, connect_thread,(void *) client);	
+		
+}
+
+
+void *connect_thread(void *objet){
+		
+		while (true){
+			((Client*)objet)->connect(false);
+			((Client*)objet)->recv(400);
+		}
+		return NULL;
+}
+
+void start_interface(){
 
 		std::cout << "Attente..." << std::endl;
 		
@@ -45,9 +87,8 @@ int main() {
 				linker.output_print_last_n(linker.get_output_window_writable_height()); 
 
 		}
-
-		return 0;
 }
+
 
 
 
