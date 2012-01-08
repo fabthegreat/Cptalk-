@@ -1,43 +1,46 @@
 #include "interface.h"
-#include "Core.h"
 #include <iostream>
 #include <string>
 
-void start_XMPP();
-void start_interface();
-void *connect_thread(void *objet);
+void start_XMPP(Core* core);
+void start_interface(Core* core);
+
+// function pointer for connection threading
+void* connect_thread(void *objet);
 
 int main() {
 
-		start_XMPP();	
-		start_interface();
+		Core* core=new Core;
+		start_XMPP(core);	
+		start_interface(core);
+		
+		delete core;
 		return 0;
 }
 
-void start_XMPP() {
+void start_XMPP(Core* core) {
 
 		
-		Core_XMPP* core=new Core_XMPP;
 		core->connected=false;	
 
 		JID jid( "bot@lutix.org/cptalk" );
 		Client* client = new Client( jid, "fab99999" );
-		/** Chargement des module du client **/
+
+		//Loading client module
 		client->registerConnectionListener( core );
 		client->registerMessageSessionHandler( core, 0 );
 		client->registerPresenceHandler( core );
 		client->rosterManager()->registerRosterListener(core);
 		
-		/** Thread de connexion**/
-		pthread_t my_thread;		
-	
+		/** Connexion thread**/
+		pthread_t xmpp_thread;		
 		
-		pthread_create(&my_thread, NULL, connect_thread,(void *) client);	
+		pthread_create(&xmpp_thread, NULL, connect_thread,(void *) client);	
 		
 }
 
 
-void *connect_thread(void *objet){
+void* connect_thread(void *objet){
 		
 		while (true){
 			((Client*)objet)->connect(false);
@@ -46,20 +49,22 @@ void *connect_thread(void *objet){
 		return NULL;
 }
 
-void start_interface(){
+void start_interface(Core* core){
 
 		std::cout << "Attente..." << std::endl;
 		
-		//Créer une fabrique/classe spécifique?
+		// Créer une fabrique/classe spécifique?
 		Terminal xterm;	
 		Input input(xterm);	
 		Output output(xterm);		
-		ICore_XMPP icore_xmpp;
+
+		//Core core;
 		Linker linker; 
 
-		linker.register_clients(output,icore_xmpp);
+		linker.register_clients(output,input,core);
 		input.register_linker(linker);
-		icore_xmpp.register_linker(linker);
+		output.register_terminal(xterm);
+		core->register_linker(linker);
 		//Fin de fabrique?
 
 		output.draw();
@@ -78,9 +83,10 @@ void start_interface(){
 
 				output.refresh();
 				input.refresh();
-				xterm.refresh();
 
-				input.edit();
+				//input.edit();
+
+				linker.action_router();
 
 				output.reset();
 				input.reset();
@@ -88,7 +94,6 @@ void start_interface(){
 
 		}
 }
-
 
 
 

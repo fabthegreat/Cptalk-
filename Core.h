@@ -11,18 +11,18 @@
 using namespace gloox;
 
 
-class Core_XMPP : public ConnectionListener, public PresenceHandler, public MessageSessionHandler, public MessageHandler, public RosterListener
+class ICore_XMPP : public ConnectionListener, public PresenceHandler, public MessageSessionHandler, public MessageHandler, public RosterListener
 {
 public:
-Core_XMPP();
-~Core_XMPP();
+ICore_XMPP();
+~ICore_XMPP();
 
 bool connected;
 
 // à la connexion
-void onConnect();
+/*void onConnect();*/
 void onDisconnect(ConnectionError e);
-bool onTLSConnect(const CertInfo& info);
+/*bool onTLSConnect(const CertInfo& info);*/
 
 
 

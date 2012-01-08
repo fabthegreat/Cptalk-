@@ -1,3 +1,4 @@
+#include "Core.h"
 #include <ncurses.h>
 #include <panel.h>
 #include <string>
@@ -20,7 +21,7 @@ using namespace std;
 
 // Forward declaration for dialog between Linker and ICore_XMPP
 class Linker;
-class ICore_XMPP;
+class Core_XMPP;
 class Input;
 class Output;
 
@@ -86,6 +87,11 @@ class IO {
 			virtual unsigned int& get_index();
 			virtual unsigned int get_history_size();
 			virtual unsigned int get_window_height();
+			void register_terminal(Terminal& terminal);
+			void refresh_terminal();
+
+
+			
 		
 		protected:		
 			unsigned int height; //nb_lignes
@@ -98,6 +104,7 @@ class IO {
 
 			WINDOW* window; // pointeur vers la fenetre concernee
 			PANEL* panel;
+			Terminal* ptr_terminal;
 
 			Buffer history;
 };
@@ -121,12 +128,17 @@ class Linker {
 		Linker();
 		~Linker();
 			
+		// Main controls
+		void action_router();
+
+		// Treatment actions
 		void command_parser(Line& line); // parser the line
 		void command_analyser(Line& line);
 		void command_router(Line& line); // route the command
 
-		void register_clients(Output& output, ICore_XMPP& icore_xmpp);
+		void register_clients(Output& output,Input& input, ICore_XMPP* icore_xmpp);
 
+		// Ouput control
 		unsigned int& get_output_index();
 		unsigned int get_output_window_writable_height();
 		void output_refresh();
@@ -135,10 +147,16 @@ class Linker {
 		void output_linedown();
 		void output_print_last_n(unsigned int n);
 		void output_print_history(unsigned int i);
+
+		// Input control
+		bool action_token; //0 is output, 1 is input
 	
 	private:
 		ICore_XMPP* ptr_icore_xmpp;
 		Output* ptr_output;
+		Input* ptr_input; //necessary to save input status each time something is printed
+		
+
 
 };
 
@@ -156,22 +174,35 @@ class Input: public IO {
 	private:
 		Linker* ptr_linker;
 		void print_string(string s); //i: ligne d'affichage
+
+
+
 };
 
-class ICore_XMPP {
+class Core_XMPP {
 
 	public:
-		ICore_XMPP();
-		~ICore_XMPP();
-
-		void register_linker(Linker& linker);
+		void attribute_linker(Linker& linker);
+		void launch_output_refresh();
+		
+		// set of function for ICore_XMPP implementation
+		//
 		void send_line(Line line);
-
-
 
 	private:
 		Linker* ptr_linker;
 
 };
 
+class Core: public ICore_XMPP {
+	public:
+		void register_linker(Linker& linker);
+		
+		void onConnect();
+		bool onTLSConnect(const CertInfo& info);
 
+
+	private:
+		Core_XMPP core_XMPP; //implementation
+
+};
