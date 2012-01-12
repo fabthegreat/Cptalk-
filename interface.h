@@ -130,10 +130,12 @@ class Linker {
 			
 		// Main controls
 		void action_router();
+		void set_token(bool token);
+		bool get_token();
 
 		// Treatment actions
 		void command_parser(Line& line); // parser the line
-		void command_analyser(Line& line);
+		void command_analyser(vector<string> line_tokens);
 		void command_router(Line& line); // route the command
 
 		void register_clients(Output& output,Input& input, ICore_XMPP* icore_xmpp);
@@ -149,13 +151,13 @@ class Linker {
 		void output_print_history(unsigned int i);
 
 		// Input control
-		bool action_token; //0 is output, 1 is input
 	
 	private:
 		ICore_XMPP* ptr_icore_xmpp;
 		Output* ptr_output;
 		Input* ptr_input; //necessary to save input status each time something is printed
 		
+		bool action_token; //0 is output, 1 is input
 
 
 };
@@ -170,11 +172,12 @@ class Input: public IO {
 		void edit(); // gather all input element and send it either to linker or to itself
 		bool char_analysis(int c, unsigned int& i,string& s);
 		void register_linker(Linker& linker);
+		void set_timeout(unsigned int t_out);
 
 	private:
 		Linker* ptr_linker;
 		void print_string(string s); //i: ligne d'affichage
-
+		unsigned int timeout;
 
 
 };

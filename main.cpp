@@ -66,7 +66,7 @@ void start_interface(Core* core){
 		output.register_terminal(xterm);
 		core->register_linker(linker);
 		//Fin de fabrique?
-
+		
 		output.draw();
 		input.draw();
 
