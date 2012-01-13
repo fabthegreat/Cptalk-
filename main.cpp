@@ -27,6 +27,8 @@ void start_XMPP(Core* core) {
 		Client* client = new Client( jid, "fab99999" );
 
 		//Loading client module
+		// The observable adds an observer
+		// when the client launches a signal, it informs the core that launches actions (slots)
 		client->registerConnectionListener( core );
 		client->registerMessageSessionHandler( core, 0 );
 		client->registerPresenceHandler( core );

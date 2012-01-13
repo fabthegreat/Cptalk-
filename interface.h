@@ -203,6 +203,7 @@ class Core: public ICore_XMPP {
 		
 		void onConnect();
 		bool onTLSConnect(const CertInfo& info);
+		void handleRosterPresence(const RosterItem &item, const std::string &resource, Presence::PresenceType presence, const std::string &msg);
 
 
 	private:
