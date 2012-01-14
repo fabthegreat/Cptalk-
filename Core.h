@@ -8,6 +8,7 @@
 #include <gloox/rosterlistener.h>
 #include <gloox/rostermanager.h>
 
+
 using namespace gloox;
 
 
@@ -48,6 +49,5 @@ void handleRosterError (const IQ &iq);
 
 
 };
-
 
 

@@ -6,7 +6,7 @@ void start_XMPP(Core* core);
 void start_interface(Core* core);
 
 // function pointer for connection threading
-void* connect_thread(void *objet);
+//void* connect_thread(void *objet);
 
 int main() {
 
@@ -26,30 +26,22 @@ void start_XMPP(Core* core) {
 		JID jid( "bot@lutix.org/cptalk" );
 		Client* client = new Client( jid, "fab99999" );
 
-		//Loading client module
+		CpClient* cpclient=new CpClient;
+		cpclient->define_client(client); // look at the client object to be implemented
 		// The observable adds an observer
 		// when the client launches a signal, it informs the core that launches actions (slots)
-		client->registerConnectionListener( core );
-		client->registerMessageSessionHandler( core, 0 );
-		client->registerPresenceHandler( core );
-		client->rosterManager()->registerRosterListener(core);
+		// but sometimes the core needs to control the client
+		cpclient->register_core(core);
+		core->register_cpclient(cpclient);
+
+		//cpclient->launch_connect();
 		
-		/** Connexion thread**/
-		pthread_t xmpp_thread;		
-		
-		pthread_create(&xmpp_thread, NULL, connect_thread,(void *) client);	
+	
 		
 }
 
 
-void* connect_thread(void *objet){
-		
-		while (true){
-			((Client*)objet)->connect(false);
-			((Client*)objet)->recv(400);
-		}
-		return NULL;
-}
+
 
 void start_interface(Core* core){
 

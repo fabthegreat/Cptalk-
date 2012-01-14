@@ -22,8 +22,10 @@ using namespace std;
 // Forward declaration for dialog between Linker and ICore_XMPP
 class Linker;
 class Core_XMPP;
+class Core;
 class Input;
 class Output;
+class CpClient;
 
 
 
@@ -132,13 +134,14 @@ class Linker {
 		void action_router();
 		void set_token(bool token);
 		bool get_token();
+	
 
 		// Treatment actions
 		void command_parser(Line& line); // parser the line
 		void command_analyser(vector<string> line_tokens);
 		void command_router(Line& line); // route the command
 
-		void register_clients(Output& output,Input& input, ICore_XMPP* icore_xmpp);
+		void register_clients(Output& output,Input& input, Core* core);
 
 		// Ouput control
 		unsigned int& get_output_index();
@@ -149,11 +152,13 @@ class Linker {
 		void output_linedown();
 		void output_print_last_n(unsigned int n);
 		void output_print_history(unsigned int i);
+		
+		// Core control
+		void XMMP_connect();
 
-		// Input control
 	
 	private:
-		ICore_XMPP* ptr_icore_xmpp;
+		Core* ptr_core;
 		Output* ptr_output;
 		Input* ptr_input; //necessary to save input status each time something is printed
 		
@@ -176,6 +181,7 @@ class Input: public IO {
 
 	private:
 		Linker* ptr_linker;
+		
 		void print_string(string s); //i: ligne d'affichage
 		unsigned int timeout;
 
@@ -200,13 +206,35 @@ class Core_XMPP {
 class Core: public ICore_XMPP {
 	public:
 		void register_linker(Linker& linker);
+		void register_cpclient(CpClient* cpclient);
 		
 		void onConnect();
 		bool onTLSConnect(const CertInfo& info);
 		void handleRosterPresence(const RosterItem &item, const std::string &resource, Presence::PresenceType presence, const std::string &msg);
+		void launch_connect();
 
 
 	private:
 		Core_XMPP core_XMPP; //implementation
+		CpClient* ptr_cpclient;
 
 };
+
+
+
+void* connect_thread(void *objet);
+
+class CpClient {
+	public:
+		void launch_connect();
+		void launch_disconnect();
+		void register_core(Core* co);
+		void define_client(Client* cl);
+
+	private:
+		Client* ptr_client;
+};
+
+
+
+

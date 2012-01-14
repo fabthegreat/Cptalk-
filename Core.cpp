@@ -50,3 +50,7 @@ bool ICore_XMPP::handleSubscriptionRequest (const JID &jid, const std::string &m
 bool ICore_XMPP::handleUnsubscriptionRequest (const JID &jid, const std::string &msg){return true;}
 void ICore_XMPP::handleNonrosterPresence (const Presence &presence){}
 void ICore_XMPP::handleRosterError (const IQ &iq){}
+
+
+
+
