@@ -21,7 +21,6 @@ using namespace std;
 
 // Forward declaration for dialog between Linker and ICore_XMPP
 class Linker;
-class Core_XMPP;
 class Core;
 class Input;
 class Output;
@@ -155,6 +154,7 @@ class Linker {
 		
 		// Core control
 		void XMMP_connect();
+		void list_roster();
 
 	
 	private:
@@ -188,35 +188,32 @@ class Input: public IO {
 
 };
 
-class Core_XMPP {
-
-	public:
-		void attribute_linker(Linker& linker);
-		void launch_output_refresh();
-		
-		// set of function for ICore_XMPP implementation
-		//
-		void send_line(Line line);
-
-	private:
-		Linker* ptr_linker;
-
-};
-
 class Core: public ICore_XMPP {
 	public:
+		bool connected;
 		void register_linker(Linker& linker);
 		void register_cpclient(CpClient* cpclient);
+
+		void launch_output_refresh();
+		void send_line(Line line);
 		
 		void onConnect();
 		bool onTLSConnect(const CertInfo& info);
 		void handleRosterPresence(const RosterItem &item, const std::string &resource, Presence::PresenceType presence, const std::string &msg);
+		void handleMessage(const Message& msg, MessageSession* session);
+		void handleMessageSession(MessageSession* session);
+
+		// Actions asked by any class having access to a Core
+		void list_roster();
 		void launch_connect();
+		void launch_disconnect();
+		void send_mesg_to();
 
 
 	private:
-		Core_XMPP core_XMPP; //implementation
+		/*Core_XMPP core_XMPP; //implementation*/
 		CpClient* ptr_cpclient;
+		Linker* ptr_linker;
 
 };
 
@@ -229,6 +226,7 @@ class CpClient {
 		void launch_connect();
 		void launch_disconnect();
 		void register_core(Core* co);
+		void register_session(MessageSession* session);
 		void define_client(Client* cl);
 
 	private:

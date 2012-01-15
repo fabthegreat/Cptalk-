@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <gloox/client.h>
+#include <gloox/message.h>
 #include <gloox/presencehandler.h>
 #include <gloox/connectionlistener.h>
 #include <gloox/messagesessionhandler.h>
@@ -18,18 +19,18 @@ public:
 ICore_XMPP();
 ~ICore_XMPP();
 
-bool connected;
 
 // à la connexion
-/*void onConnect();*/
+virtual void onConnect()=0;
+virtual bool onTLSConnect(const CertInfo& info)=0;
 void onDisconnect(ConnectionError e);
-/*bool onTLSConnect(const CertInfo& info);*/
 
 
 
 //à la reception de messages
-void handleMessageSession(MessageSession* session);
-void handleMessage(const Message& msg, MessageSession* session=0);
+virtual void handleMessageSession(MessageSession* session)=0;
+virtual void handleMessage(const Message& msg, MessageSession* session=0)=0;
+
 void handlePresence(const Presence &presence);  	
 
 
@@ -40,7 +41,7 @@ void handleItemRemoved (const JID &jid);
 void handleItemUpdated (const JID &jid);
 void handleItemUnsubscribed (const JID &jid);
 void handleRoster (const Roster &roster);
-void handleRosterPresence (const RosterItem &item, const std::string &resource, Presence::PresenceType presence, const std::string &msg);
+virtual void handleRosterPresence (const RosterItem &item, const std::string &resource, Presence::PresenceType presence, const std::string &msg)=0;
 void handleSelfPresence (const RosterItem &item, const std::string &resource, Presence::PresenceType presence, const std::string &msg);
 bool handleSubscriptionRequest (const JID &jid, const std::string &msg);
 bool handleUnsubscriptionRequest (const JID &jid, const std::string &msg);
