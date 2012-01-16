@@ -195,7 +195,9 @@ class Core: public ICore_XMPP {
 		void register_cpclient(CpClient* cpclient);
 
 		void launch_output_refresh();
+		void launch_output_reset();
 		void send_line(Line line);
+		void write_string(string s);
 		
 		void onConnect();
 		bool onTLSConnect(const CertInfo& info);
@@ -228,6 +230,7 @@ class CpClient {
 		void register_core(Core* co);
 		void register_session(MessageSession* session);
 		void define_client(Client* cl);
+		Roster* get_roster();
 
 	private:
 		Client* ptr_client;
