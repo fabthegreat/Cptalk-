@@ -157,6 +157,7 @@ class Linker {
 		void XMMP_connect();
 		void list_roster();
 
+		// Input offers
 	
 	private:
 		Core* ptr_core;
@@ -186,6 +187,8 @@ class Input: public IO {
 		
 		void print_string(string s); //i: ligne d'affichage
 		unsigned int timeout;
+		
+		vector<string> commands_choice;
 
 
 };
