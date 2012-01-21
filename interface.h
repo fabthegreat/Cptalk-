@@ -30,7 +30,7 @@ class CpClient;
 
 // amené a être le même
 
-enum Type_content {all,message,announce};
+enum Type_content {all,command,message,announce};
 enum Route {route_output,route_XMPP};
 /*enum command_value {connect,disconnect,list_r};*/
 
@@ -156,8 +156,10 @@ class Linker {
 		// Core control
 		void XMMP_connect();
 		void list_roster();
+		void send_message(string bare_jid,string body);
 
 		// Input offers
+		void update_roster_choice(vector<string> list_roster);
 	
 	private:
 		Core* ptr_core;
@@ -181,6 +183,7 @@ class Input: public IO {
 		void complete(string& s,unsigned int& index);
 		void register_linker(Linker& linker);
 		void set_timeout(unsigned int t_out);
+		void update_roster_choice(vector<string> list_roster);
 
 	private:
 		Linker* ptr_linker;
@@ -189,6 +192,7 @@ class Input: public IO {
 		unsigned int timeout;
 		
 		vector<string> commands_choice;
+		vector<string> roster_choice;
 
 
 };
@@ -214,7 +218,9 @@ class Core: public ICore_XMPP {
 		void list_roster();
 		void launch_connect();
 		void launch_disconnect();
-		void send_mesg_to();
+		void update_roster_choice();
+		void print_session_id(const string bare); //just a temp function to retrieve session id from a bare jid
+		MessageSession* get_session_from_bare(const string bare); //just a temp function to retrieve session id from a bare jid
 
 
 	private:
@@ -236,9 +242,12 @@ class CpClient {
 		void register_session(MessageSession* session);
 		void define_client(Client* cl);
 		Roster* get_roster();
+		MessageSession* get_session_from_bare(const string bare);
+		void add_session(MessageSession* session);
 
 	private:
 		Client* ptr_client;
+		vector<MessageSession*> session_list; 
 };
 
 
