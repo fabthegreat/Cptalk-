@@ -160,6 +160,7 @@ class Linker {
 
 		// Input offers
 		void update_roster_choice(vector<string> list_roster);
+		bool find_from_vector(string s, vector<string> list);
 	
 	private:
 		Core* ptr_core;
@@ -167,6 +168,7 @@ class Linker {
 		Input* ptr_input; //necessary to save input status each time something is printed
 		
 		bool action_token; //0 is output, 1 is input
+		vector<string> roster_choice;
 
 
 };
@@ -221,6 +223,7 @@ class Core: public ICore_XMPP {
 		void update_roster_choice();
 		void print_session_id(const string bare); //just a temp function to retrieve session id from a bare jid
 		MessageSession* get_session_from_bare(const string bare); //just a temp function to retrieve session id from a bare jid
+		JID* get_JID_from_bare(const string bare);
 
 
 	private:
