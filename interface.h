@@ -223,7 +223,8 @@ class Core: public ICore_XMPP {
 		void update_roster_choice();
 		void print_session_id(const string bare); //just a temp function to retrieve session id from a bare jid
 		MessageSession* get_session_from_bare(const string bare); //just a temp function to retrieve session id from a bare jid
-		JID* get_JID_from_bare(const string bare);
+		JID get_JID_from_bare(const string bare);
+		MessageSession* create_session(JID jid);
 
 
 	private:
@@ -247,6 +248,7 @@ class CpClient {
 		Roster* get_roster();
 		MessageSession* get_session_from_bare(const string bare);
 		void add_session(MessageSession* session);
+		Client* get_client();
 
 	private:
 		Client* ptr_client;
