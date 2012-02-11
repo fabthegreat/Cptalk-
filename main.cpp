@@ -1,4 +1,17 @@
-#include "interface.h"
+#include "XMPP.h"
+#include "IO.h"
+#include "Linker.h"
+#include "ICore.h"
+
+#include <gloox/client.h>
+#include <gloox/message.h>
+#include <gloox/presencehandler.h>
+#include <gloox/connectionlistener.h>
+#include <gloox/messagesessionhandler.h>
+#include <gloox/messagehandler.h>
+#include <gloox/rosterlistener.h>
+#include <gloox/rostermanager.h>
+
 #include <iostream>
 #include <string>
 

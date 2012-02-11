@@ -44,7 +44,7 @@ void Core::handleRosterPresence(const RosterItem &item, const std::string &resou
 }		
 
 void Core::handleMessage(const Message& msg, MessageSession* session){
-	write_string(session->target().full() + ", " + session->target().bare() + " -> " + msg.body());
+	write_string(session->target().bare() + " -> " + msg.body());
 	// to debug
 	//print_session_id(session->target().bare());
 }
@@ -52,7 +52,7 @@ void Core::handleMessage(const Message& msg, MessageSession* session){
 void Core::handleMessageSession(MessageSession* session){
 	ptr_cpclient->register_session(session);
 	session->registerMessageHandler(this);
-	ptr_cpclient->add_session(session);
+	ptr_cpclient->store_session(session);
 }
 
 
@@ -117,28 +117,32 @@ void Core::print_session_id(const string bare){
 MessageSession* Core::get_session_from_bare(const string bare){
 	
 	// warning: manage session list in core and not in cpclient!!
+	//write_string("Session " +  ptr_cpclient->get_session_from_bare(bare)->threadID() + " already opened with ID: " + bare);
 	return ptr_cpclient->get_session_from_bare(bare);
 }
 
+MessageSession* Core::create_session(const string bare){
 
-JID Core::get_JID_from_bare(const string bare){
-
-		Roster::iterator it;
-		Roster* roster= ptr_cpclient->get_roster();
-		JID j;
-		for (it=(*roster).begin();it!=(*roster).end();it++){
-				j.setJID((*it).first);
-				if ( j.bare() == bare ){ return j;}
-		}
+		MessageSession* session = new MessageSession(ptr_cpclient->get_client(),bare);
+		//session->setThreadID("session_" + bare);
+		ptr_cpclient->store_session(session);
+		ptr_cpclient->register_session(session);
+		session->registerMessageHandler(this);
+		
+		write_string("A new chat session is created with JID: " + session->target().full());
+		return session;
 
 
 }
 
-MessageSession* Core::create_session(JID jid){
-
-		MessageSession* session = new MessageSession(ptr_cpclient->get_client(),jid);
-		return session;
-
+void Core::list_sessions(){
+		unsigned int i;
+		vector<MessageSession*> s_list;
+		s_list=ptr_cpclient->get_session_list();
+		
+		for (i=0;i<s_list.size();i++){
+			write_string("*" + s_list[i]->target().full() + " -> " + s_list[i]->threadID());
+		}
 
 }
 
@@ -153,23 +157,33 @@ Roster* CpClient::get_roster(){
 	return ptr_client->rosterManager()->roster();
 }
 
+vector<MessageSession*> CpClient::get_session_list(){
+	return session_list;
+}
+
 MessageSession* CpClient::get_session_from_bare(const string bare){
 		vector<MessageSession*>::iterator it;
 
 		for (it=session_list.begin();it<session_list.end();it++){
-				if ((*it)->target().bare() == bare) return *it; 
+				if ((*it)->target().bare() == bare) {
+				
+				return *it; 
+				}
 		}
 		
 		return 0;
 
 }
 
-void CpClient::add_session(MessageSession* session){
+void CpClient::store_session(MessageSession* session){
 		session_list.push_back(session);	
 }
 
 
 
+void CpClient::register_session(MessageSession* session){
+	ptr_client->registerMessageSession(session);
+}
 
 
 
@@ -182,9 +196,6 @@ void CpClient::register_core(Core* co){
 		
 }
 
-void CpClient::register_session(MessageSession* session){
-	ptr_client->registerMessageSession(session);
-}
 
 void CpClient::launch_connect(){
 	ptr_client->connect(false);
@@ -203,7 +214,7 @@ Client* CpClient::get_client(){
 }
 		
 void* connect_thread(void *objet){
-		
+
 		//((Client*)objet)->connect(false);
 		while (true){
 			((Client*)objet)->recv(400);

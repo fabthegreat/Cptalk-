@@ -40,6 +40,7 @@ Input::Input(Terminal& term)
 	commands_choice.push_back("connect");
 	commands_choice.push_back("disconnect");
 	commands_choice.push_back("list roster");
+	commands_choice.push_back("list sessions");
 }
 
 Input::~Input(){}

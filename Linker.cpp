@@ -44,6 +44,8 @@ void Linker::command_parser(Line& line){
 	
 		// verify there's a bare_jid with that existing name (maybe reusing a part of the complete function?)
 		if ( find_from_vector(bare_jid , roster_choice) ) {
+			l1.content="The JID you're sending a message to belongs to your roster list!";								  
+			command_router(l1);
 			send_message(bare_jid,body);
 		} else {
 			l1.content="This JID doesn't exist in your roster or is not connected!";								  
@@ -108,6 +110,12 @@ void Linker::command_analyser(vector<string> line_tokens){
 			command_router(l);
 			list_roster();
 
+		}		
+		if ( line_tokens[1] == "sessions"){
+			l.content="Listing...";
+			command_router(l);
+			list_sessions();
+
 		}
 	}
 
@@ -147,9 +155,18 @@ void Linker::send_message(string bare_jid,string body){
 				//Line l("Session number with this jid: " + session->threadID());
 				//command_router(l);	
 				session->send(body);
-				Line l(body);
+				Line l(bare_jid + " <- " + body);
 				command_router(l);	
 		} else {
+				Line l("No session exists for this JID, cptalk will create one!");
+				command_router(l);	
+				ptr_core->create_session(bare_jid)->send(body);
+				l.content=bare_jid + " <- " + body;
+				command_router(l);	
+				//l=ptr_core->get_JID_from_bare(bare_jid)->full();
+				//command_router(l);	
+
+				
 				
 		}
 
@@ -231,6 +248,10 @@ void Linker::XMMP_connect(){
 
 void Linker::list_roster(){
 		ptr_core->list_roster();
+}
+
+void Linker::list_sessions(){
+		ptr_core->list_sessions();
 }
 
 void Linker::update_roster_choice(vector<string> list_roster){

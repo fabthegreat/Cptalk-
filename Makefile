@@ -1,29 +1,13 @@
 CXX=g++
 CXXFLAGS=-Wall
 LDFLAGS=-lgloox -lpthread -lncurses -lpanel
-EXEC_CPTALK=cptalk2
+EXEC_CPTALK=cptalk
 EXEC_GUI=gui
 EXEC_TEST=test
 
 all: cptalk
 
-cptalk: main.o interface.o Core.o
-	$(CXX) -o $(EXEC_CPTALK) main.o Core.o interface.o $(CXXFLAGS) $(LDFLAGS)
-
-main.o: main.cpp
-	$(CXX) -c main.cpp $(CXXFLAGS) $(LDFLAGS)
-
-Core.o: Core.cpp Core.h
-	$(CXX) -c Core.cpp $(CXXFLAGS) $(LDFLAGS)
-
-interface.o: interface.cpp interface.h
-	$(CXX) -c interface.cpp $(CXXFLAGS) $(LDFLAGS)
-
-
-# Nouvelle organisation
-test: cptalk2
-
-cptalk2: main.o ICore.o common.o IO.o Linker.o XMPP.o
+cptalk: main.o ICore.o common.o IO.o Linker.o XMPP.o
 	$(CXX) -o $(EXEC_CPTALK) main.o ICore.o common.o IO.o Linker.o XMPP.o $(CXXFLAGS) $(LDFLAGS)
 
 ICore.o: ICore.cpp ICore.h

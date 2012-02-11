@@ -43,6 +43,7 @@ class Linker {
 		// Core control
 		void XMMP_connect();
 		void list_roster();
+		void list_sessions();
 		void send_message(string bare_jid,string body);
 
 		// Input offers

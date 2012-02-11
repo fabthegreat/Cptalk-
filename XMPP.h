@@ -44,10 +44,11 @@ class Core: public ICore_XMPP {
 		void launch_connect();
 		void launch_disconnect();
 		void update_roster_choice();
+
 		void print_session_id(const string bare); //just a temp function to retrieve session id from a bare jid
+		void list_sessions(); //just a temp function to list all current sessions in use
 		MessageSession* get_session_from_bare(const string bare); //just a temp function to retrieve session id from a bare jid
-		JID get_JID_from_bare(const string bare);
-		MessageSession* create_session(JID jid);
+		MessageSession* create_session(const string bare);
 
 
 	private:
@@ -66,12 +67,15 @@ class CpClient {
 		void launch_connect();
 		void launch_disconnect();
 		void register_core(Core* co);
-		void register_session(MessageSession* session);
 		void define_client(Client* cl);
+
 		Roster* get_roster();
-		MessageSession* get_session_from_bare(const string bare);
-		void add_session(MessageSession* session);
 		Client* get_client();
+		vector<MessageSession*> get_session_list();
+
+		MessageSession* get_session_from_bare(const string bare);
+		void register_session(MessageSession* session);
+		void store_session(MessageSession* session);
 
 	private:
 		Client* ptr_client;

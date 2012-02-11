@@ -1,4 +1,4 @@
-#include "Core.h"
+#include "ICore.h"
 
 ICore_XMPP::ICore_XMPP(){
 
