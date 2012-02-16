@@ -45,6 +45,7 @@ class Core: public ICore_XMPP {
 		void launch_disconnect();
 		void update_roster_choice();
 
+		// Session managing part
 		void print_session_id(const string bare); //just a temp function to retrieve session id from a bare jid
 		void list_sessions(); //just a temp function to list all current sessions in use
 		MessageSession* get_session_from_bare(const string bare); //just a temp function to retrieve session id from a bare jid

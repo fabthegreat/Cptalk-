@@ -65,6 +65,8 @@ void IO::reset(){
 
 void IO::add_history(Line l){
 	history.push_back(l);
+	//display.push_back(l);
+	push_to_display(l,width);
 }
 
 void IO::print_line(Line l, unsigned int i){
@@ -74,13 +76,38 @@ void IO::print_line(Line l, unsigned int i){
 	delete a;
 }
 
+void IO::push_to_display(Line l, unsigned int w){
+	
+	Line pushed_line = l;
+	pushed_line.content = l.content;
+
+	unsigned int i=0;
+	unsigned int rmn = l.content.size();	
+	
+
+
+	while ( rmn > w ){
+			pushed_line.content = l.content.substr(i,w);
+			display.push_back(pushed_line);
+			i += w;
+			rmn -= w;
+	}
+
+	if ( rmn <= w ){
+			pushed_line.content = l.content.substr(i,w);
+			display.push_back(pushed_line);
+	}
+
+
+}
+
 unsigned int& IO::get_index(){
 	return print_index;
 }
 
 
 unsigned int IO::get_history_size(){
-		return history.size();
+		return display.size();
 }
 
 unsigned int IO::get_window_height(){
@@ -93,7 +120,7 @@ unsigned int IO::get_start_index(unsigned int final_index,unsigned int line_numb
 
 
 unsigned int IO::get_final_index(unsigned int start_index,unsigned int line_number){
-			return min(history.size(),start_index+line_number);
+			return min(display.size(),start_index+line_number);
 }	
 
 void IO::register_terminal(Terminal& terminal){
@@ -122,12 +149,12 @@ void Output::print_history(unsigned int i){
 	unsigned int ps; //point start
 	unsigned int pf; //point final
 
-	ps=max((unsigned int)0,min(i, history.size()-1));
+	ps=max((unsigned int)0,min(i, display.size()-1));
 	pf=get_final_index(ps,height-2);
 	print_index=ps;	
 
 	for ( it=ps ; it < pf; it++ ){
-			print_line(history[it].content,i_print++);
+			print_line(display[it].content,i_print++);
 	}
 
 
@@ -140,12 +167,12 @@ void Output::print_history_last_n(unsigned int n){
 	unsigned int ps; //point start
 	unsigned int pf; //point final
 
-	pf=history.size();
+	pf=display.size();
 	ps=get_start_index(pf-1,n);
 	print_index=ps;	
 
 	for ( it=ps ; it < pf; it++ ){
-			print_line(history[it].content,i_print++);
+			print_line(display[it].content,i_print++);
 	}
 
 
@@ -200,7 +227,7 @@ void Input::edit(){
 		if ( s.empty() == false ) {
 			Line l(s);
 			add_history(l);
-			print_index=history.size(); // print_index is set to the last member of history
+			print_index=display.size(); // print_index is set to the last member of history
 			ptr_linker->command_parser(l);
 		}
 }		
@@ -228,15 +255,15 @@ bool Input::char_analysis(int c,unsigned int& i, string& s){
 		}
 		else if (c == KEY_UP){
 				if ( print_index>0 ){
-					s=history[--print_index].content;
+					s=display[--print_index].content;
 					i=0; // replace the cursor on the first caracter of the string
 				}
 				return true;
 		}
 		else if (c == KEY_DOWN){
-				if ( history.empty() != true) {
-					if ( print_index < history.size()-1 ){
-						s=history[++print_index].content;
+				if ( display.empty() != true) {
+					if ( print_index < display.size()-1 ){
+						s=display[++print_index].content;
 						i=0; // replace the cursor on the first caracter of the string
 					}
 				}

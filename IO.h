@@ -44,6 +44,7 @@ class IO {
 			virtual void reset();
 			virtual void add_history(Line l);
 			virtual void print_line(Line l,unsigned int i); //i: ligne d'affichage
+			virtual void push_to_display(Line l, unsigned int w); // auto format the line into several ones to fit the screen
 			virtual unsigned int& get_index();
 			virtual unsigned int get_history_size();
 			virtual unsigned int get_window_height();
@@ -67,6 +68,7 @@ class IO {
 			Terminal* ptr_terminal;
 
 			Buffer history;
+			Buffer display;
 };
 
 
