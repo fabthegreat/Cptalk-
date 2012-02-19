@@ -42,6 +42,7 @@ class Core: public ICore_XMPP {
 		// Actions asked by any class having access to a Core
 		void list_roster();
 		void launch_connect();
+		void recv(int time);
 		void launch_disconnect();
 		void update_roster_choice();
 
@@ -77,6 +78,7 @@ class CpClient {
 		MessageSession* get_session_from_bare(const string bare);
 		void register_session(MessageSession* session);
 		void store_session(MessageSession* session);
+		void recv(int t);
 
 	private:
 		Client* ptr_client;

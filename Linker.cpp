@@ -246,6 +246,10 @@ void Linker::XMMP_connect(){
 		ptr_core->launch_connect();
 }
 
+void Linker::XMMP_recv(int t){
+		ptr_core->recv(t);
+}
+
 void Linker::list_roster(){
 		ptr_core->list_roster();
 }

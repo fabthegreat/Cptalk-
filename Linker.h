@@ -42,6 +42,7 @@ class Linker {
 		
 		// Core control
 		void XMMP_connect();
+		void XMMP_recv(int t);
 		void list_roster();
 		void list_sessions();
 		void send_message(string bare_jid,string body);

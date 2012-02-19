@@ -66,7 +66,7 @@ void IO::reset(){
 void IO::add_history(Line l){
 	history.push_back(l);
 	//display.push_back(l);
-	push_to_display(l,width);
+	push_to_display(l,width - 2);
 }
 
 void IO::print_line(Line l, unsigned int i){
@@ -200,7 +200,7 @@ void Input::draw(){
 	box(window,0,0);
 	panel= new_panel(window);
 	mvwprintw(window,1,1,"> ");
-	set_timeout(5); //release the input while something else write on the output
+	set_timeout(7); //release the input in order something else write on the output
 }
 
 void Input::register_linker(Linker& linker){
@@ -213,8 +213,10 @@ void Input::edit(){
 		unsigned int i=0; //position of the cursor
 		string s; // will be sent to the linker object
 
-		while( char_analysis(mvwgetch(window,1,i+3),i,s) ){
+		while( char_analysis(mvwgetch(window,1,i+3),i,s) ){ //giving the hand to the input during timeout
 				print_string(s);
+
+				ptr_linker->XMMP_recv(400); // receiving datas from the server during 5ms
 				
 				if ( ptr_linker->get_token() ){
 						ptr_linker->output_reset();

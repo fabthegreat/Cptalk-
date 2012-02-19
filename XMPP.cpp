@@ -1,7 +1,7 @@
 #include "XMPP.h"
 #include "ICore.h"
 #include "Linker.h"
-
+#include <time.h>
 
 ////////////////////////////////////////////////
 //----------> Core
@@ -39,8 +39,9 @@ bool Core::onTLSConnect(const CertInfo& info){
 }
 
 void Core::handleRosterPresence(const RosterItem &item, const std::string &resource, Presence::PresenceType presence, const std::string &msg){
-	write_string("You have received a status update of: "+ item.jid() + " (" + msg + ")");
-	update_roster_choice();
+		write_string("You have received a status update of: " + item.jid() + " (" + msg + ")");
+		// some bugs with item.jid(), check caracters issues
+		update_roster_choice();
 }		
 
 void Core::handleMessage(const Message& msg, MessageSession* session){
@@ -69,6 +70,10 @@ void Core::launch_connect(){
 	}
 }
 
+void Core::recv(int t){
+		ptr_cpclient->recv(t);
+
+	}
 void Core::launch_disconnect(){
 	if (connected==true){
 		ptr_cpclient->launch_disconnect();}
@@ -199,9 +204,13 @@ void CpClient::register_core(Core* co){
 
 void CpClient::launch_connect(){
 	ptr_client->connect(false);
-	pthread_t xmpp_thread;		
-	pthread_create(&xmpp_thread, NULL, connect_thread,(void *) ptr_client);	
+	//pthread_t xmpp_thread;		
+	//pthread_create(&xmpp_thread, NULL, connect_thread,(void *) ptr_client);	
 
+}
+
+void CpClient::recv(int t){
+	ptr_client->recv(t);
 }
 
 void CpClient::launch_disconnect(){

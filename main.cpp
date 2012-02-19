@@ -36,7 +36,7 @@ void start_XMPP(Core* core) {
 		
 		core->connected=false;	
 
-		JID jid( "bot@lutix.org/cptalk" );
+		JID jid( "ftg@lutix.org/cptalk" );
 		Client* client = new Client( jid, "fab99999" );
 
 		CpClient* cpclient=new CpClient;
