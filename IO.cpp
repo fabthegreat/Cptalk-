@@ -200,7 +200,7 @@ void Input::draw(){
 	box(window,0,0);
 	panel= new_panel(window);
 	mvwprintw(window,1,1,"> ");
-	set_timeout(7); //release the input in order something else write on the output
+	set_timeout(8); //release the input in order something else write on the output
 }
 
 void Input::register_linker(Linker& linker){

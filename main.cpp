@@ -36,8 +36,8 @@ void start_XMPP(Core* core) {
 		
 		core->connected=false;	
 
-		JID jid( "ftg@lutix.org/cptalk" );
-		Client* client = new Client( jid, "fab99999" );
+		JID jid( "bot@lutix.org/cptalk" );
+		Client* client = new Client( jid, "bot" );
 
 		CpClient* cpclient=new CpClient;
 		cpclient->define_client(client); // look at the client object to be implemented
@@ -88,8 +88,8 @@ void start_interface(Core* core){
 
 		while(true){
 
-				output.refresh();
-				input.refresh();
+				//output.refresh();
+				//input.refresh();
 
 				//input.edit();
 

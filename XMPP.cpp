@@ -204,8 +204,6 @@ void CpClient::register_core(Core* co){
 
 void CpClient::launch_connect(){
 	ptr_client->connect(false);
-	//pthread_t xmpp_thread;		
-	//pthread_create(&xmpp_thread, NULL, connect_thread,(void *) ptr_client);	
 
 }
 
@@ -222,11 +220,3 @@ Client* CpClient::get_client(){
 	return ptr_client;
 }
 		
-void* connect_thread(void *objet){
-
-		//((Client*)objet)->connect(false);
-		while (true){
-			((Client*)objet)->recv(400);
-		}
-		return NULL;
-}
