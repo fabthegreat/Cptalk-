@@ -181,6 +181,14 @@ void Linker::register_clients(Output& output, Input& input, Core* core){
 		ptr_core=core;
 }
 
+void Linker::input_refresh(){
+	ptr_input->refresh();
+}
+
+void Linker::input_reset(){
+	ptr_input->reset();
+}
+
 unsigned int& Linker::get_output_index(){
 		return ptr_output->get_index();
 }
@@ -214,7 +222,7 @@ void Linker::output_reset(){
 }
 		
 void Linker::output_print_last_n(unsigned int n){
-		
+						
 		ptr_output->print_history_last_n(n);
 		output_refresh();
 }

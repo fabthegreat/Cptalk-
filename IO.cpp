@@ -214,6 +214,7 @@ void Input::edit(){
 		string s; // will be sent to the linker object
 
 		while( char_analysis(mvwgetch(window,1,i+3),i,s) ){ //giving the hand to the input during timeout
+
 				print_string(s);
 
 				ptr_linker->XMMP_recv(400); // receiving datas from the server during 5ms
@@ -286,8 +287,13 @@ bool Input::char_analysis(int c,unsigned int& i, string& s){
 				return true;
 		
 		}
-		else if (c == '\n') {return false;}
-		else if (c == ERR) {return true;}
+		else if (c == '\n') {
+				reset(); // cancel the effect of '\n'
+				refresh(); // cancel the effect of '\n'
+				return false;}
+		
+		else if (c == ERR) {
+				return true;}
 
 		s.insert(i++,1,c);
 		return true;

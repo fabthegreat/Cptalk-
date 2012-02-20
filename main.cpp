@@ -95,9 +95,9 @@ void start_interface(Core* core){
 
 				linker.action_router();
 
-				output.reset();
-				input.reset();
-				linker.output_print_last_n(linker.get_output_window_writable_height()); 
+				//output.reset();
+				//input.reset();
+				//linker.output_print_last_n(linker.get_output_window_writable_height()); 
 
 		}
 }

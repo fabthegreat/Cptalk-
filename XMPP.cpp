@@ -1,7 +1,6 @@
 #include "XMPP.h"
 #include "ICore.h"
 #include "Linker.h"
-#include <time.h>
 
 ////////////////////////////////////////////////
 //----------> Core
@@ -64,7 +63,8 @@ void Core::register_cpclient(CpClient* cpclient){
 
 void Core::launch_connect(){
 	if (connected==false){
-		ptr_cpclient->launch_connect();}
+		ptr_cpclient->launch_connect();
+	}
 	else {
 		write_string("You\'re already connected!");
 	}

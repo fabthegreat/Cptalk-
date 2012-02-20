@@ -39,6 +39,10 @@ class Linker {
 		void output_linedown();
 		void output_print_last_n(unsigned int n);
 		void output_print_history(unsigned int i);
+
+		// Input control
+		void input_refresh();
+		void input_reset();
 		
 		// Core control
 		void XMMP_connect();
