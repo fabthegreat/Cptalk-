@@ -14,6 +14,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Cptalk!.  If not, see <http://www.gnu.org/licenses/>.**/
 
+#define CPTALK_VERSION 1.0 
+
 #include "XMPP.h"
 #include "IO.h"
 #include "Linker.h"
@@ -30,6 +32,8 @@ along with Cptalk!.  If not, see <http://www.gnu.org/licenses/>.**/
 
 #include <iostream>
 #include <string>
+
+
 
 void start_XMPP(Core* core);
 void start_interface(Core* core);
@@ -52,8 +56,8 @@ void start_XMPP(Core* core) {
 		
 		core->connected=false;	
 
-		JID jid( "bot@lutix.org/cptalk" );
-		Client* client = new Client( jid, "bot" );
+		JID jid( "ftg@lutix.org/cptalk" );
+		Client* client = new Client( jid, "fab99999" );
 
 		CpClient* cpclient=new CpClient;
 		cpclient->define_client(client); // look at the client object to be implemented

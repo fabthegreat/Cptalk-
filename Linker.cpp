@@ -119,6 +119,7 @@ void Linker::command_analyser(vector<string> line_tokens){
 	else if ( line_tokens[0] == "disconnect"){
 			l.content="Disconnecting...";
 			command_router(l);
+			XMMP_disconnect();
 	}
 	else if ( line_tokens[0] == "list"){
 		if ( line_tokens[1] == "roster"){
@@ -270,6 +271,9 @@ void Linker::XMMP_connect(){
 		ptr_core->launch_connect();
 }
 
+void Linker::XMMP_disconnect(){
+	ptr_core->launch_disconnect();
+}
 void Linker::XMMP_recv(int t){
 		ptr_core->recv(t);
 }

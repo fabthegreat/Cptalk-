@@ -28,8 +28,10 @@ ICore_XMPP::~ICore_XMPP(){}
 
 
 void ICore_XMPP::onDisconnect(ConnectionError e)
-		 {
-		}
+{
+		
+
+}
 
 void ICore_XMPP::handlePresence (const Presence &presence){
 

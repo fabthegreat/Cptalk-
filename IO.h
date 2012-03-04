@@ -108,7 +108,7 @@ class Input: public IO {
 		void draw();
 		void edit(); // gather all input element and send it either to linker or to itself
 		bool char_analysis(int c, unsigned int& i,string& s);
-		void complete(string& s,unsigned int& index);
+		bool complete(string& s,unsigned int& index);
 		void register_linker(Linker& linker);
 		void set_timeout(unsigned int t_out);
 		void update_roster_choice(vector<string> list_roster);

@@ -50,6 +50,7 @@ class Core: public ICore_XMPP {
 		void write_string(string s);
 		
 		void onConnect();
+		void onDisconnect(ConnectionError e);
 		bool onTLSConnect(const CertInfo& info);
 		void handleRosterPresence(const RosterItem &item, const std::string &resource, Presence::PresenceType presence, const std::string &msg);
 		void handleMessage(const Message& msg, MessageSession* session);

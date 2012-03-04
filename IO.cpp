@@ -227,12 +227,28 @@ ptr_linker=&linker;
 
 void Input::edit(){
 		
-		unsigned int i=0; //position of the cursor
+		unsigned int i=0; //position of the char
+		unsigned int ip=0; //position of the cursor
+		unsigned int w = width - 5;
+
 		string s; // will be sent to the linker object
+		string sp;
 
-		while( char_analysis(mvwgetch(window,1,i+3),i,s) ){ //giving the hand to the input during timeout
+		while( char_analysis(mvwgetch(window,1,ip+3),i,s) ){ //giving the hand to the input during timeout
 
-				print_string(s);
+				// if i>input total length then print from i-length
+				sp = s;
+				ip = i;
+				
+				if ( i > w ){
+					sp = s.substr(i-w, w); 
+					ip = w;
+					
+				} else {
+					sp = s.substr(0, w);
+				}
+
+					print_string(sp);
 
 				ptr_linker->XMMP_recv(400); // receiving datas from the server during 5ms
 				
@@ -299,14 +315,14 @@ bool Input::char_analysis(int c,unsigned int& i, string& s){
 				return true;
 		}
 		else if (c == '\t'){
-				complete(s,i);
+				return complete(s,i);
 
-				return true;
+				//return true;
 		
 		}
 		else if (c == '\n') {
-				reset(); // cancel the effect of '\n'
-				refresh(); // cancel the effect of '\n'
+				reset(); // cancel the CR effect of '\n'
+				refresh(); // cancel the CR effect of '\n'
 				return false;}
 		
 		else if (c == ERR) {
@@ -318,9 +334,13 @@ bool Input::char_analysis(int c,unsigned int& i, string& s){
 
 }
 
-void Input::complete(string& s,unsigned int& index){
+bool Input::complete(string& s,unsigned int& index){
 
 		vector<string> complete_list;
+		vector<string> match_list; // list of matching commands
+
+
+
 		unsigned int i;
 		char h_command;
 
@@ -329,9 +349,9 @@ void Input::complete(string& s,unsigned int& index){
 					s = s.substr(s.size()-i+1,i);
 					complete_list = commands_choice; // if a '/' is detected you try to complete a command 
 					h_command='/';
-				}else if ( s[s.size()-i] == '$' ){
+				} else if ( s[s.size()-i] == '$' ){
 					s = s.substr(s.size()-i+1,i);
-					complete_list = roster_choice; // if a '/' is detected you try to complete a command 
+					complete_list = roster_choice; // if a '$' is detected you try to complete a roster 
 					h_command='$';
 				}
 		}
@@ -340,28 +360,51 @@ void Input::complete(string& s,unsigned int& index){
 		unsigned int found;
 		string found_command;
 
+
 		Line l("");
 		l.content="Available tokens: ";
 
 		for(i=0;i<complete_list.size();i++){
-			found=complete_list[i].find(s);	
+			found = complete_list[i].find(s);	
 			if(found == 0) {
 					nb_commands++;
 					l.content += " " + complete_list[i];
 					found_command = complete_list[i];
+					match_list.push_back(found_command);
 			}
 		}
 		
 		if ( nb_commands > 1 ) {
-		ptr_linker->command_router(l);
-		s = h_command + s;
+				//ptr_linker->command_router(l);
+			s = h_command + s;
+
+			unsigned int ml_count = 1;
+			int c = '\t';
+			while ( (c == ERR) || (c == '\t') ){
+
+				if ( c == '\t' ) { 
+				s = h_command + match_list[ml_count++];
+				print_string(s);	
+
+					if ( ml_count == match_list.size() ) ml_count=0;
+				}
+			c = mvwgetch(window,1,s.size()+3);
+			}
+		index = s.size();
+		return 	char_analysis(c, index, s);
+
+
 		} else if ( nb_commands == 0 ){
-		s = h_command + s;
+			s = h_command + s;
 		} else if ( nb_commands == 1 ) {
-		s = h_command + found_command + " ";
+			s = h_command + found_command + " ";
 		} 
 
 		index=s.size();
+
+		return true;
+
+
 }
 
 

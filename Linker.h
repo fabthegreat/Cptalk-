@@ -63,6 +63,7 @@ class Linker {
 		
 		// Core control
 		void XMMP_connect();
+		void XMMP_disconnect();
 		void XMMP_recv(int t);
 		void list_roster();
 		void list_sessions();

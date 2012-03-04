@@ -49,8 +49,13 @@ void Core::onConnect(){
 }
 
 bool Core::onTLSConnect(const CertInfo& info){
+	connected=true;
 	write_string("Connected in TLS to the XMPP server!");
 	return true;	
+}
+void Core::onDisconnect(ConnectionError e){
+	connected=false;
+	write_string("Disconnected!");
 }
 
 void Core::handleRosterPresence(const RosterItem &item, const std::string &resource, Presence::PresenceType presence, const std::string &msg){
@@ -90,9 +95,11 @@ void Core::recv(int t){
 		ptr_cpclient->recv(t);
 
 	}
+
 void Core::launch_disconnect(){
 	if (connected==true){
-		ptr_cpclient->launch_disconnect();}
+		ptr_cpclient->launch_disconnect();
+	}
 	else {
 		write_string("You\'re already disconnected!");
 	}
@@ -223,13 +230,15 @@ void CpClient::launch_connect(){
 
 }
 
+void CpClient::launch_disconnect(){
+	ptr_client->disconnect();
+
+}
+
 void CpClient::recv(int t){
 	ptr_client->recv(t);
 }
 
-void CpClient::launch_disconnect(){
-		//ptr_client->disconnect(ConnUserDisconnected); 
-}
 
 Client* CpClient::get_client(){
 
