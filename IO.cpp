@@ -56,6 +56,8 @@ Input::Input(Terminal& term)
 
 	commands_choice.push_back("connect");
 	commands_choice.push_back("disconnect");
+	commands_choice.push_back("lock");
+	commands_choice.push_back("unlock");
 	commands_choice.push_back("list roster");
 	commands_choice.push_back("list sessions");
 }
@@ -205,23 +207,23 @@ void Output::print_history_last_n(unsigned int n){
 
 void Input::set_timeout(unsigned int t_out){
 	
-	timeout=t_out;
-	wtimeout(window, timeout);
+		timeout=t_out;
+		wtimeout(window, timeout);
 }
 
 
 
 void Input::draw(){
-	window=newwin(3,width,height-3,0);
-	keypad(window, TRUE);
-	box(window,0,0);
-	panel= new_panel(window);
-	mvwprintw(window,1,1,"> ");
-	set_timeout(8); //release the input in order something else write on the output
+		window=newwin(3,width,height-3,0);
+		keypad(window, TRUE);
+		box(window,0,0);
+		panel= new_panel(window);
+		mvwprintw(window,1,1,"> ");
+		set_timeout(8); //release the input in order something else write on the output
 }
 
 void Input::register_linker(Linker& linker){
-ptr_linker=&linker;
+		ptr_linker=&linker;
 }
 
 
@@ -248,15 +250,13 @@ void Input::edit(){
 					sp = s.substr(0, w);
 				}
 
-					print_string(sp);
+				print_string(sp);
 
-				ptr_linker->XMMP_recv(400); // receiving datas from the server during 5ms
+				ptr_linker->XMMP_recv(40); // receiving datas from the server during 5ms
 				
 				if ( ptr_linker->get_token() ){
-						ptr_linker->output_reset();
-						ptr_linker->output_print_last_n(ptr_linker->get_output_window_writable_height()); 
+						ptr_linker->get_and_push(40, false);
 						ptr_linker->set_token(false);
-						ptr_linker->output_refresh();
 				}
 		}
 		
@@ -338,7 +338,7 @@ bool Input::complete(string& s,unsigned int& index){
 
 		vector<string> complete_list;
 		vector<string> match_list; // list of matching commands
-
+		string s_init = s;
 
 
 		unsigned int i;
@@ -346,10 +346,12 @@ bool Input::complete(string& s,unsigned int& index){
 
 		for(i=0;i<s.size()+1;i++){
 				if ( s[s.size()-i] == '/' ){
+					s_init = s.substr(0, s.size()-i);
 					s = s.substr(s.size()-i+1,i);
 					complete_list = commands_choice; // if a '/' is detected you try to complete a command 
 					h_command='/';
 				} else if ( s[s.size()-i] == '$' ){
+					s_init = s.substr(0, s.size()-i);
 					s = s.substr(s.size()-i+1,i);
 					complete_list = roster_choice; // if a '$' is detected you try to complete a roster 
 					h_command='$';
@@ -362,42 +364,54 @@ bool Input::complete(string& s,unsigned int& index){
 
 
 		Line l("");
+
+
 		l.content="Available tokens: ";
 
 		for(i=0;i<complete_list.size();i++){
 			found = complete_list[i].find(s);	
 			if(found == 0) {
 					nb_commands++;
-					l.content += " " + complete_list[i];
+					l.content += " * " + complete_list[i];
 					found_command = complete_list[i];
 					match_list.push_back(found_command);
 			}
 		}
 		
 		if ( nb_commands > 1 ) {
-				//ptr_linker->command_router(l);
-			s = h_command + s;
+			
+			Line cr("");
+			cr.content = "";
+			ptr_linker->command_router(cr);
+			// print roster possibilities to the output
+			ptr_linker->urgent_warning(l);
+			
+			s = s_init + h_command + s;
 
 			unsigned int ml_count = 1;
 			int c = '\t';
 			while ( (c == ERR) || (c == '\t') ){
 
 				if ( c == '\t' ) { 
-				s = h_command + match_list[ml_count++];
+				s = s_init + h_command + match_list[ml_count++];
 				print_string(s);	
 
 					if ( ml_count == match_list.size() ) ml_count=0;
 				}
 			c = mvwgetch(window,1,s.size()+3);
+			//
+			// warning, output need to be updated 
+			//
+			ptr_linker->get_and_push(40); // receiving datas from the server during 40ms
 			}
 		index = s.size();
 		return 	char_analysis(c, index, s);
 
 
 		} else if ( nb_commands == 0 ){
-			s = h_command + s;
+			s = s_init + h_command + s;
 		} else if ( nb_commands == 1 ) {
-			s = h_command + found_command + " ";
+			s = s_init + h_command + found_command + " ";
 		} 
 
 		index=s.size();

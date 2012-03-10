@@ -38,6 +38,9 @@ class Linker {
 		void action_router();
 		void set_token(bool token);
 		bool get_token();
+
+		// Global controls
+		void get_and_push(int t, bool recv = true); // get datas from server and push to output
 	
 
 		// Treatment actions
@@ -56,6 +59,7 @@ class Linker {
 		void output_linedown();
 		void output_print_last_n(unsigned int n);
 		void output_print_history(unsigned int i);
+		void urgent_warning(Line l); // to use with care only with important messages that can't wait for server response
 
 		// Input control
 		void input_refresh();
@@ -65,6 +69,8 @@ class Linker {
 		void XMMP_connect();
 		void XMMP_disconnect();
 		void XMMP_recv(int t);
+		void lock_roster(string bare_jid);
+		void unlock_roster();
 		void list_roster();
 		void list_sessions();
 		void send_message(string bare_jid,string body);
@@ -80,6 +86,7 @@ class Linker {
 		
 		bool action_token; //0 is output, 1 is input
 		vector<string> roster_choice;
+		string locked_roster;
 
 
 };

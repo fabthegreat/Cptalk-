@@ -26,6 +26,19 @@ Linker::~Linker(){}
 
 ////////////////////////////////////////
 //----------> Linker
+//
+void Linker::get_and_push(int t, bool recv){
+			if ( recv == true ) { XMMP_recv(t);} // receiving datas from the server during t ms
+			output_reset();
+			output_print_last_n(get_output_window_writable_height()); 
+			output_refresh();
+}
+
+void Linker::urgent_warning(Line l){
+			command_router(l);
+			get_and_push(40);
+}
+
 void Linker::command_parser(Line& line){
 
 	vector<string> command_tokens;
@@ -94,7 +107,14 @@ void Linker::command_parser(Line& line){
 		command_tokens.push_back(str_temp);
 
 		command_analyser(command_tokens);
+	
+	} else if ( (h_command != '$') && (h_command != '/') && (locked_roster != "") ) {
+		
+		l1.content="Warning: this message is sent to: " + locked_roster;								  
+		command_router(l1);
+		send_message(locked_roster,line.content);
 
+	
 	} else {
 
 		command_router(l1);
@@ -105,6 +125,8 @@ void Linker::command_parser(Line& line){
 
 	 // parse the line
 }
+		
+
 
 void Linker::command_analyser(vector<string> line_tokens){
 	
@@ -113,13 +135,29 @@ void Linker::command_analyser(vector<string> line_tokens){
 
 	if ( line_tokens[0] == "connect" ){
 			l.content="Connecting...";
-			command_router(l);
+			//command_router(l);
+			urgent_warning(l);
+			//because of some delay of server response, connecting message must be printed at once
 			XMMP_connect();
 	}
 	else if ( line_tokens[0] == "disconnect"){
 			l.content="Disconnecting...";
-			command_router(l);
+			//command_router(l);
+			urgent_warning(l);
+			//because of some delay of server response, connecting message must be printed at once
 			XMMP_disconnect();
+	}
+	else if ( line_tokens[0] == "lock"){
+			l.content = "Locking...";
+			urgent_warning(l);
+
+			lock_roster(line_tokens[1]);		
+	}
+	else if ( line_tokens[0] == "unlock"){
+			l.content = "Unlocking...";
+			urgent_warning(l);
+
+			unlock_roster();		
 	}
 	else if ( line_tokens[0] == "list"){
 		if ( line_tokens[1] == "roster"){
@@ -266,6 +304,26 @@ void Linker::set_token(bool token){
 bool Linker::get_token(){
 	return action_token;
 }
+
+
+void Linker::unlock_roster(){
+	locked_roster = "";
+}
+
+
+void Linker::lock_roster(string h_bare_jid){
+		string bare_jid;
+		bare_jid = h_bare_jid.substr(1,h_bare_jid.size()-1);
+
+		// test bare_jid
+
+
+		locked_roster = bare_jid;
+		Line l("");	
+		l.content="Roster locked: " + bare_jid;
+		urgent_warning(l);
+}
+
 
 void Linker::XMMP_connect(){
 		ptr_core->launch_connect();
